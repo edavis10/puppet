@@ -76,6 +76,8 @@ describe Puppet::Node::Catalog::ActiveRecord do
     describe "when saving an instance" do
         before do
             @host = stub 'host', :name => "foo", :save => nil, :merge_resources => nil, :last_compile= => nil
+            @host.stubs(:railsmark).yields
+
             Puppet::Rails::Host.stubs(:find_by_name).returns @host
             @catalog = Puppet::Node::Catalog.new("foo")
             @request = stub 'request', :key => "foo", :instance => @catalog
