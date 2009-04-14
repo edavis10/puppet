@@ -151,7 +151,23 @@ module Puppet
             huge numbers that can then not be fed back into the system.  This is a hackish way to fail in a
             slightly more useful way when that happens."],
         :node_terminus => ["plain", "Where to find information about nodes."],
-        :queue_type => ["stomp", "Which type of queue to use for asynchronous processing."]
+        :queue_type => ["stomp", "Which type of queue to use for asynchronous processing."],
+        :queue_source => ["stomp://localhost:61613/", "Which type of queue to use for asynchronous processing.  If your stomp server requires
+            authentication, you can include it in the URI as long as your stomp client library is at least 1.1.1"],
+        :async_storeconfigs => {:default => false, :desc => "Whether to use a queueing system to provide asynchronous database integration.
+            Requires that ``puppetqd`` be running.",
+            :hook => proc do |value|
+                if value
+                    # This reconfigures the terminii for Node, Facts, and Catalog
+                    Puppet.settings[:storeconfigs] = true
+
+                    # But then we modify the configuration
+                    Puppet::Node::Catalog.cache_class = :queue
+                else
+                    raise "Cannot disable asynchronous storeconfigs in a running process"
+                end
+            end
+        }
     )
 
     hostname = Facter["hostname"].value
@@ -668,7 +684,7 @@ module Puppet
                 require 'puppet/node/facts'
                 require 'puppet/node/catalog'
                 if value
-                    Puppet::Node::Catalog.cache_class = :active_record
+                    Puppet::Node::Catalog.cache_class = :active_record unless Puppet.settings[:async_storeconfigs]
                     Puppet::Node::Facts.cache_class = :active_record
                     Puppet::Node.cache_class = :active_record
                 end
