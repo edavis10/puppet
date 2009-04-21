@@ -162,6 +162,10 @@ describe "Puppet defaults" do
         end
     end
 
+    it "should have a :timeout setting defaulting to 0" do
+        Puppet.settings[:timeout].should == 0
+    end
+
     describe "when enabling thin storeconfigs" do
         before do
             Puppet::Resource::Catalog.stubs(:cache_class=)
