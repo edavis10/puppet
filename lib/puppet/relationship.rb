@@ -31,7 +31,32 @@ class Puppet::Relationship
 
         new(source, target, args)
     end
+
+    attr_reader :event, :type
+
+    RELATIONSHIP_TYPES = [:container, :dependency]
+
+    # Sort dependency edges before container edges.
+    # Otherwise, sort alphabetically
+    def <=>(other)
+        if self.type == other.type
+            weight = (self.target.weight <=> other.target.weight)
+            return weight unless weight == 0
+            return (self.target.to_s <=> other.target.to_s)
+        end
+
+        return -1 if dependency?
+        return 1 # We're a container; we lose
+    end
     
+    def container?
+        type == :container
+    end
+
+    def dependency?
+        type == :dependency
+    end
+
     def event=(event)
         if event != :NONE and ! callback
             raise ArgumentError, "You must pass a callback for non-NONE events"
@@ -43,7 +68,10 @@ class Puppet::Relationship
         @source, @target = source, target
 
         options = (options || {}).inject({}) { |h,a| h[a[0].to_sym] = a[1]; h }
-        [:callback, :event].each do |option|
+
+        # Default to a 'container' type relationship
+        @type = :container
+        [:callback, :event, :type].each do |option|
             if value = options[option]
                 send(option.to_s + "=", value)
             end
@@ -92,5 +120,11 @@ class Puppet::Relationship
 
     def to_s
         ref
+    end
+
+    def type=(value)
+        raise ArgumentError, "Invalid relationship type %s; valid values are %s" % [value, RELATIONSHIP_TYPES.inspect] unless RELATIONSHIP_TYPES.include?(value)
+
+        @type = value
     end
 end

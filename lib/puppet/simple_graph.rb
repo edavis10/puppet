@@ -361,20 +361,62 @@ class Puppet::SimpleGraph
     end
 
     # Just walk the tree and pass each edge.
-    def walk(source, direction)
+    def old_walk(source, direction, &block)
         # Use an iterative, breadth-first traversal of the graph. One could do
         # this recursively, but Ruby's slow function calls and even slower
         # recursion make the shorter, recursive algorithm cost-prohibitive.
+        adjacent(source, :direction => direction, :type => :edges).sort.each do |edge|
+            yield source, edge.target
+            walk(edge.target, direction, &block)
+        end
+    end
+
+    WalkTracker = Struct.new(:stack, :seen, :direction)
+
+    # Just walk the tree and pass each edge.
+    def dfs_walk(source, direction = :out, &block)
+        # Use an iterative, breadth-first traversal of the graph. One could do
+        # this recursively, but Ruby's slow function calls and even slower
+        # recursion make the shorter, recursive algorithm cost-prohibitive.
+        tracker = WalkTracker.new([], Set.new, direction)
+
+        # Init the stack with the top edges
+        fill_walk_stack(tracker, source)
+
+        until tracker.stack.empty?
+            perform_walk_iteration(tracker, &block)
+        end
+    end
+
+    def fill_walk_stack(tracker, node)
+        return if tracker.seen.member?(node)
+
+        # Reverse the sort order so the edges can be popped in sort order
+        adjacent(node, :direction => tracker.direction, :type => :edges).sort.reverse.each do |edge|
+            tracker.stack << edge
+        end
+    end
+
+    def perform_walk_iteration(tracker, &block)
+        return unless edge = tracker.stack.pop
+
+        yield edge
+
+        fill_walk_stack(tracker, edge.target)
+
+        tracker.seen << edge.target
+    end
+
+    def bfs_walk(source, direction, &block)
         stack = [source]
         seen = Set.new
         until stack.empty?
             node = stack.shift
             next if seen.member? node
-            connected = adjacent(node, :direction => direction)
-            connected.each do |target|
-                yield node, target
+            adjacent(node, :direction => direction, :type => :edges).sort.each do |edge|
+                yield edge.source, edge.target
+                stack << edge.target
             end
-            stack.concat(connected)
             seen << node
         end
     end

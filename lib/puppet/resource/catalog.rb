@@ -87,10 +87,6 @@ class Puppet::Resource::Catalog < Puppet::SimpleGraph
 
             add_vertex(resource)
 
-            if @relationship_graph
-                @relationship_graph.add_vertex(resource)
-            end
-
             yield(resource) if block_given?
         end
     end
@@ -173,11 +169,6 @@ class Puppet::Resource::Catalog < Puppet::SimpleGraph
         # We have to do this so that the resources clean themselves up.
         @resource_table.values.each { |resource| resource.remove } if remove_resources
         @resource_table.clear
-
-        if defined?(@relationship_graph) and @relationship_graph
-            @relationship_graph.clear
-            @relationship_graph = nil
-        end
     end
 
     def classes
@@ -292,7 +283,6 @@ class Puppet::Resource::Catalog < Puppet::SimpleGraph
         @resource_table = {}
         @transient_resources = []
         @applying = false
-        @relationship_graph = nil
 
         @aliases = {}
 
@@ -316,6 +306,40 @@ class Puppet::Resource::Catalog < Puppet::SimpleGraph
         end
     end
 
+    # Create a graph of all of the relationships in our catalog.
+    def add_relationships
+        add_specified_dependencies
+        add_automatic_dependencies
+        write_graph(:expanded_relationships) if host_config?
+    end
+
+    def add_specified_dependencies
+        # First create the dependency graph
+        self.vertices.each do |vertex|
+            vertex.builddepends.each do |edge|
+                edge.type = :dependency
+                add_edge(edge)
+            end
+        end
+    end
+
+    def add_automatic_dependencies
+        # Lastly, add in any autorequires
+        vertices.each do |vertex|
+            vertex.autorequire(self).each do |edge|
+                unless edge?(edge.source, edge.target) # don't let automatic relationships conflict with manual ones.
+                    unless edge?(edge.target, edge.source)
+                        vertex.debug "Autorequiring %s" % [edge.source]
+                        edge.type = :dependency
+                        add_edge(edge)
+                    else
+                        vertex.debug "Skipping automatic relationship with %s" % (edge.source == vertex ? edge.target : edge.source)
+                    end
+                end
+            end
+        end
+    end
+    
     # Create a graph of all of the relationships in our catalog.
     def relationship_graph
         unless defined? @relationship_graph and @relationship_graph
@@ -368,7 +392,6 @@ class Puppet::Resource::Catalog < Puppet::SimpleGraph
                 @aliases.delete(resource.ref)
             end
             remove_vertex!(resource) if vertex?(resource)
-            @relationship_graph.remove_vertex!(resource) if @relationship_graph and @relationship_graph.vertex?(resource)
             resource.remove
         end
     end
@@ -511,7 +534,6 @@ class Puppet::Resource::Catalog < Puppet::SimpleGraph
         unless @transient_resources.empty?
             remove_resource(*@transient_resources)
             @transient_resources.clear
-            @relationship_graph = nil
         end
 
         # Expire any cached data the resources are keeping.

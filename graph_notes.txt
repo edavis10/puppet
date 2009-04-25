@@ -1,0 +1,46 @@
+If a container is notifying a resource:
+    all contained resources notify that resource
+
+If a container is being notified by a resource:
+    all contained resources are notified by that resource
+
+        Events can only use :in containment edges when they have not yet crossed a dependency edge
+
+If a contained resource is failed, then the container is failed
+
+If a required resource is failed, then the requiring resource is failed
+
+If a container resource is noop, then the contained resource is noop
+
+
+Each vertex should:
+
+    * notify the subscribers to its containers
+
+    * mark as failed any subscribers to its containers when it fails
+
+    * receive events passed to its container resources
+
+    * know if its container resources are in noop, and why
+
+Thus, shadow information:
+
+    * Dependents of self and containers
+
+    * Events directed at containers or self
+
+    * Failure state of self or container (and why)
+
+    * Noop state of self or container
+
+It looks like a minimum of two passes will be required, with the first pass probably ignoring
+dependency relationships or sorting them first.  This pass's job is to build up the shadow map
+and populate it with, at least, noop data.
+
+A second pass would then be able to test noop status for a given vertex, regardless of how
+that vertex was reached.
+
+Without that first pass, we could only test noop state if a vertex was reached directly via
+its parent, which wouldn't necessarily happen if someone had a direct relationship to a
+vertex.  Or, somewhat more generally, we just wouldn't have a correct shadow, and none
+of the shadowing would work.
