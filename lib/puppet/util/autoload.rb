@@ -82,7 +82,7 @@ class Puppet::Util::Autoload
                 # I have no idea what's going on here, but different versions
                 # of ruby are raising different errors on missing files.
                 unless detail.to_s =~ /^no such file/i
-                    warn "Could not autoload %s: %s" % [name, detail]
+                    warn "Could not autoload %s for %s: %s" % [name, self.object, detail]
                     if Puppet[:trace]
                         puts detail.backtrace
                     end
@@ -119,7 +119,7 @@ class Puppet::Util::Autoload
                     if Puppet[:trace]
                         puts detail.backtrace
                     end
-                    warn "Could not autoload %s: %s" % [file.inspect, detail]
+                    warn "Could not autoload %s for %s: %s" % [object, file.inspect, detail]
                 end
             end
         end
