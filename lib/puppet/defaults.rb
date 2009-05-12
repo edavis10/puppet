@@ -684,6 +684,7 @@ module Puppet
                 require 'puppet/node/facts'
                 require 'puppet/node/catalog'
                 if value
+                    raise "StoreConfigs not supported without ActiveRecord 2.3" unless Puppet.features.rails?
                     Puppet::Node::Catalog.cache_class = :active_record unless Puppet.settings[:async_storeconfigs]
                     Puppet::Node::Facts.cache_class = :active_record
                     Puppet::Node.cache_class = :active_record
