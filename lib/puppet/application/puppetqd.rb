@@ -76,7 +76,7 @@ Puppet::Application.new(:puppetqd) do
         end
         daemonize if Puppet[:daemonize]
 
-        while true do sleep 1000 end
+        Thread.list.each { |thread| thread.join }
     end
 
     # This is the main application entry point.
