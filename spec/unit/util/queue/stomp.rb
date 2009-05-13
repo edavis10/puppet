@@ -13,6 +13,12 @@ end
 describe 'Puppet::Util::Queue::Stomp' do
     confine "Missing Stomp" => Puppet.features.stomp?
 
+    before do
+        # So we make sure we never create a real client instance.
+        # Otherwise we'll try to connect, and that's bad.
+        Stomp::Client.stubs(:new).returns stub("client")
+    end
+
     it 'should be registered with Puppet::Util::Queue as :stomp type' do
         Puppet::Util::Queue.queue_type_to_class(:stomp).should == Puppet::Util::Queue::Stomp
     end
@@ -34,6 +40,11 @@ describe 'Puppet::Util::Queue::Stomp' do
             # Stub rather than expect, so we can include the source in the error
             Puppet.settings.stubs(:value).with(:queue_source).returns "http://foo/bar"
 
+            lambda { Puppet::Util::Queue::Stomp.new }.should raise_error(ArgumentError)
+        end
+
+        it "should fail somewhat helpfully if the Stomp client cannot be created" do
+            Stomp::Client.expects(:new).raises RuntimeError
             lambda { Puppet::Util::Queue::Stomp.new }.should raise_error(ArgumentError)
         end
 
