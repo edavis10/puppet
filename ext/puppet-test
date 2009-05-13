@@ -221,7 +221,7 @@ end
 
 Suite.new :local_catalog, "Local catalog handling" do
     def prepare
-        @node = Puppet::Node.find($options[:nodes][0])
+        @node = Puppet::Node.find($options[:node])
     end
 
     newtest :compile, "Compiled catalog" do
@@ -238,10 +238,10 @@ Suite.new :remote_catalog, "Remote catalog handling" do
             fail "Could not read client certificate"
         end
 
-        if tmp = Puppet::Node::Facts.find($options[:nodes][0])
+        if tmp = Puppet::Node::Facts.find($options[:node])
             @facts = tmp.values
         else
-            raise "Could not find facts for %s" % $optins[:nodes][0]
+            raise "Could not find facts for %s" % $options[:node]
         end
 
         if host = $options[:fqdn]
@@ -395,7 +395,7 @@ result = GetoptLong.new(*$cmdargs)
 
 $args = {}
 
-$options = {:repeat => 1, :fork => 0, :pause => false, :nodes => []}
+$options = {:repeat => 1, :fork => 0, :pause => false, :node => nil}
 
 begin
     explicit_waitforcert = false
@@ -450,7 +450,7 @@ begin
             when "--pause"
                 $options[:pause] = true
             when "--node"
-                $options[:nodes] << arg
+                $options[:node] = arg
             when "--list"
                 Suite.suites.sort { |a,b| a.to_s <=> b.to_s }.each do |suite_name|
                     suite = Suite[suite_name]
@@ -471,7 +471,7 @@ end
 # Now parse the config
 Puppet.parse_config
 
-$options[:nodes] << Puppet.settings[:certname] if $options[:nodes].empty?
+$options[:node] ||= Puppet[:certname]
 
 $args[:Server] = Puppet[:server]
 
