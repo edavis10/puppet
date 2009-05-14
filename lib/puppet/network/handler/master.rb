@@ -60,8 +60,14 @@ class Puppet::Network::Handler
             client ||= facts["hostname"]
 
             # Pass the facts to the fact handler
+            unless Puppet[:node_name] == 'cert'
+                if facts["hostname"].include?(".")
+                    client = facts["hostname"]
+                else
+                    client = facts["fqdn"]
+                end
+            end
             Puppet::Node::Facts.new(client, facts).save unless local?
-
             catalog = Puppet::Node::Catalog.find(client)
 
             case format
