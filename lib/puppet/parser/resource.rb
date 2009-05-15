@@ -143,6 +143,14 @@ class Puppet::Parser::Resource
             end
         end
 
+        # Define all of the parameters
+        if tags = options[:tags]
+            options.delete(:tags)
+            tags.each do |t|
+                tag(t)
+            end
+        end
+
         # Throw an exception if we've got any arguments left to set.
         unless options.empty?
             raise ArgumentError, "Resources do not accept %s" % options.keys.collect { |k| k.to_s }.join(", ")
@@ -234,6 +242,7 @@ class Puppet::Parser::Resource
 
         # Current Resource model requires a scope, but we don't need it for basic json testing.
         json['data']['scope'] = Puppet::Parser::Scope.new
+        json['data']['source'] = "fake_source"
 
         resource = new(json['data'])
         if params
