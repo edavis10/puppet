@@ -28,6 +28,18 @@ end
 
 class FooExampleData
     attr_accessor :name
+
+    def self.json_create(json)
+        new(json['data'].to_sym)
+    end
+
+    def initialize(name = nil)
+        @name = name if name
+    end
+
+    def to_json(*args)
+        {:json_class => self.class.to_s, :data => name}.to_json(*args)
+    end
 end
 
 describe Puppet::Indirector::Queue do
@@ -53,6 +65,12 @@ describe Puppet::Indirector::Queue do
         @request = stub 'request', :key => :me, :instance => @subject
     end
 
+    it "should require JSON" do
+        Puppet.features.expects(:json?).returns false
+
+        lambda { @store_class.new }.should raise_error(ArgumentError)
+    end
+
     it 'should use the correct client type and queue' do
         @store.queue.should == :my_queue
         @store.client.should be_an_instance_of(Puppet::Indirector::Queue::TestClient)
@@ -66,6 +84,7 @@ describe Puppet::Indirector::Queue do
     it 'should save and restore with the appropriate queue, and handle subscribe block' do
         @subject_two = @subject_class.new
         @subject_two.name = :too
+
         @store.save(@request)
         @store.save(stub('request_two', :key => 'too', :instance => @subject_two))
 
@@ -74,6 +93,7 @@ describe Puppet::Indirector::Queue do
             received.push(obj)
         end
 
+        received.length.should == 2
         received[0].name.should == @subject.name
         received[1].name.should == @subject_two.name
     end
