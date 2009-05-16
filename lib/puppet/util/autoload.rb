@@ -2,8 +2,11 @@ require 'puppet/util/warnings'
 
 # Autoload paths, either based on names or all at once.
 class Puppet::Util::Autoload
+    require 'puppet/util/autoload/file_cache'
+
     include Puppet::Util
     include Puppet::Util::Warnings
+    include Puppet::Util::Autoload::FileCache
 
     @autoloaders = {}
     @loaded = []
@@ -72,7 +75,7 @@ class Puppet::Util::Autoload
 
         eachdir do |dir|
             file = File.join(dir, path)
-            next unless FileTest.exists?(file)
+            next unless file_exist?(file)
             begin
                 Kernel.load file, @wrap
                 name = symbolize(name)
