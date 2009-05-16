@@ -132,7 +132,8 @@ class Puppet::Util::Autoload
     def eachdir
         searchpath.each do |dir|
             subdir = File.join(dir, @path)
-            yield subdir if FileTest.directory?(subdir)
+            next unless directory_exist?(subdir)
+            yield subdir
         end
     end
 
@@ -141,7 +142,7 @@ class Puppet::Util::Autoload
         # JJM: Search for optional lib directories in each module bundle.
         module_lib_dirs = Puppet[:modulepath].split(":").collect do |d|
             Dir.glob("%s/*/{plugins,lib}" % d).select do |f|
-                FileTest.directory?(f) 
+                directory_exist?(f) 
             end
         end.flatten
         [module_lib_dirs, Puppet[:libdir], $:].flatten
