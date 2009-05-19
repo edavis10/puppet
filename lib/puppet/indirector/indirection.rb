@@ -50,6 +50,10 @@ class Puppet::Indirector::Indirection
     attr_reader :cache_class
     # Define a terminus class to be used for caching.
     def cache_class=(class_name)
+        unless class_name
+            @cache_class = nil
+            return
+        end
         validate_terminus_class(class_name)
         @cache_class = class_name
     end
