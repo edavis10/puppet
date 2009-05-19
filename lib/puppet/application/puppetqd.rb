@@ -137,5 +137,11 @@ Puppet::Application.new(:puppetqd) do
         end
 
         Puppet::Node::Catalog.terminus_class = :active_record
+
+        # We want to make sure that we don't have a cache
+        # class set up, because if storeconfigs is enabled,
+        # we'll get a loop of continually caching the catalog
+        # for storage again.
+        Puppet::Node::Catalog.cache_class = nil
     end
 end
