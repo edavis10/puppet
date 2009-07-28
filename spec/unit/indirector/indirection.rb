@@ -233,7 +233,8 @@ describe Puppet::Indirector::Indirection do
                 end
 
                 it "should first look in the cache for an instance" do
-                    @terminus.stubs(:find).never
+                    p @indirection.cache?
+                    @terminus.expects(:find).never
                     @cache.expects(:find).returns @instance
 
                     @indirection.find("/my/key")

@@ -224,7 +224,7 @@ class Puppet::Indirector::Indirection
 
     def find_in_cache(request)
         # See if our instance is in the cache and up to date.
-        return nil unless cache? and ! request.ignore_cache? and cached = cache.find(request)
+        return nil unless cache? and ! Puppet[:ignorecache] and cached = cache.find(request)
         if cached.expired?
             Puppet.info "Not using expired %s for %s from cache; expired at %s" % [self.name, request.key, cached.expiration]
             return nil
