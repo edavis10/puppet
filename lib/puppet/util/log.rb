@@ -514,8 +514,8 @@ class Puppet::Util::Log
         # We can't store the actual source, we just store the path.
         # We can't just check for whether it responds to :path, because
         # plenty of providers respond to that in their normal function.
-        if (source.is_a?(Puppet::Type) or source.is_a?(Puppet::Parameter)) and source.respond_to?(:path)
-            set_source_from_ral(source)
+        if defined?(Puppet::Type) and (source.is_a?(Puppet::Type) or source.is_a?(Puppet::Parameter)) and source.respond_to?(:path)
+            @source = source.path
         else
             @source = source.to_s
         end
