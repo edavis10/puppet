@@ -79,6 +79,8 @@ Puppet::Application.new(:puppetqd) do
     command(:main) do
         Puppet.notice "Starting puppetqd %s" % Puppet.version
 
+        daemonize if Puppet[:daemonize]
+
         Puppet::Node::Catalog::Queue.subscribe do |catalog|
             # Once you have a Puppet::Node::Catalog instance, calling save() on it should suffice
             # to put it through to the database via its active_record indirector (which is determined
@@ -92,7 +94,10 @@ Puppet::Application.new(:puppetqd) do
                 end
             end
         end
-        daemonize if Puppet[:daemonize]
+
+        Puppet.warning "daemonized"
+
+        #Thread.new { sleep 5000 while true }
 
         Thread.list.each { |thread| thread.join }
     end
