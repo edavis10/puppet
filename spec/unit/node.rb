@@ -141,8 +141,8 @@ describe Puppet::Node, "when generating the list of names to search through" do
 
     it "should contain an entry for each name available by stripping a segment of the fqdn" do
         @node.parameters["fqdn"] = "foo.deep.sub.domain.com"
-        @node.names[2].should == "foo.deep.sub.domain"
-        @node.names[3].should == "foo.deep.sub"
+        @node.names.should be_include("foo.deep.sub.domain")
+        @node.names.should be_include("foo.deep.sub")
     end
 
     describe "and :node_name is set to 'cert'" do
@@ -152,6 +152,15 @@ describe Puppet::Node, "when generating the list of names to search through" do
 
         it "should use the passed-in key as the first value" do
             @node.names[0].should == "foo.domain.com"
+        end
+
+        it "should include all of the components of the hostname in the names list" do
+            @node = Puppet::Node.new("foo.bar.baz.domain.com")
+
+            names = @node.names
+            %w{foo foo.bar foo.bar.baz foo.bar.baz.domain.com}.each do |name|
+                names.should be_include(name)
+            end
         end
     end
 

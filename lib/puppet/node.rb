@@ -86,6 +86,7 @@ class Puppet::Node
     def names
         names = []
 
+        # Start with the cert names
         # First, get the fqdn
         unless fqdn = parameters["fqdn"]
             if parameters["hostname"] and parameters["domain"]
@@ -95,16 +96,12 @@ class Puppet::Node
             end
         end
 
+        # Start with the cert names
+        names += split_name(name)
+
         # Now that we (might) have the fqdn, add each piece to the name
         # list to search, in order of longest to shortest.
-        if fqdn
-            list = fqdn.split(".")
-            tmp = []
-            list.each_with_index do |short, i|
-                tmp << list[0..i].join(".")
-            end
-            names += tmp.reverse
-        end
+        names += split_name(fqdn) if fqdn
 
         # And make sure the node name is first, since that's the most
         # likely usage.
@@ -115,6 +112,18 @@ class Puppet::Node
         else
             names.unshift parameters["hostname"]
         end
+        names.insert(1, fqdn) if fqdn
         names.uniq
+    end
+
+    private
+
+    def split_name(name)
+        list = name.split(".")
+        tmp = []
+        list.each_with_index do |short, i|
+            tmp << list[0..i].join(".")
+        end
+        tmp.reverse
     end
 end
