@@ -95,10 +95,6 @@ Puppet::Application.new(:puppetqd) do
             end
         end
 
-        Puppet.warning "daemonized"
-
-        #Thread.new { sleep 5000 while true }
-
         Thread.list.each { |thread| thread.join }
     end
 
