@@ -12,6 +12,13 @@ describe Puppet::Application do
         @app = Puppet::Application.new(:test)
     end
 
+    it "should have a class-level run method" do
+        Puppet::Application.should respond_to(:run)
+    end
+
+    describe "when using the class-level run" do
+    end
+
     it "should have a run entry-point" do
         @app.should respond_to(:run)
     end
