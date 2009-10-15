@@ -37,6 +37,12 @@ describe Puppet::Module do
         mod.source.should == "http://foo/bar"
     end
 
+    it "should support a 'project_page' attribute" do
+        mod = Puppet::Module.new("mymod")
+        mod.project_page = "http://foo/bar"
+        mod.project_page.should == "http://foo/bar"
+    end
+
     it "should support an 'author' attribute" do
         mod = Puppet::Module.new("mymod")
         mod.author = "Luke Kanies <luke@madstop.com>"
@@ -47,6 +53,18 @@ describe Puppet::Module do
         mod = Puppet::Module.new("mymod")
         mod.license = "GPL2"
         mod.license.should == "GPL2"
+    end
+
+    it "should support a 'summary' attribute" do
+        mod = Puppet::Module.new("mymod")
+        mod.summary = "GPL2"
+        mod.summary.should == "GPL2"
+    end
+
+    it "should support a 'description' attribute" do
+        mod = Puppet::Module.new("mymod")
+        mod.description = "GPL2"
+        mod.description.should == "GPL2"
     end
 
     it "should support specifying a compatible puppet version" do
@@ -431,7 +449,22 @@ describe Puppet::Module do
         @module = Puppet::Module.new("foo")
     end
 
-    it "should 'metadata.json' in its current path as its metadata file" do
+    it "should use 'License' in its current path as its metadata file" do
+        @module.license_file.should == "/my/mod/path/License"
+    end
+
+    it "should return nil as its license file when the module has no path" do
+        Puppet::Module.any_instance.stubs(:path).returns nil
+        Puppet::Module.new("foo").license_file.should be_nil
+    end
+
+    it "should cache the license file" do
+        Puppet::Module.any_instance.expects(:path).once.returns nil
+        mod = Puppet::Module.new("foo")
+        mod.license_file.should == mod.license_file
+    end
+
+    it "should use 'metadata.json' in its current path as its metadata file" do
         @module.metadata_file.should == "/my/mod/path/metadata.json"
     end
 

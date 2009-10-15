@@ -41,7 +41,7 @@ class Puppet::Module
     attr_reader :name, :environment
     attr_writer :environment
 
-    attr_accessor :source, :author, :version, :license, :puppetversion
+    attr_accessor :source, :author, :version, :license, :puppetversion, :summary, :description, :project_page
 
     def has_metadata?
         return false unless metadata_file
@@ -103,6 +103,13 @@ class Puppet::Module
     # Find the first 'files' directory.  This is used by the XMLRPC fileserver.
     def file_directory
         subpath("files")
+    end
+
+    def license_file
+        return @license_file if defined?(@license_file)
+
+        return @license_file = nil unless path
+        @license_file = File.join(path, "License")
     end
 
     def load_metadata
