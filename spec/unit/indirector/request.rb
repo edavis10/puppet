@@ -232,6 +232,57 @@ describe Puppet::Indirector::Request do
         Puppet::Indirector::Request.new(:myind, :find, "my key", :node => 'foo').to_hash[:node].should == 'foo'
     end
 
+    it "should support specifying serialized instance data and format" do
+        request = Puppet::Indirector::Request.new(:myind, :find, "my key",
+            :serialized_instance_data => 'foo', 
+            :serialized_instance_format => 'myformat'
+        )
+        request.serialized_instance_data.should == "foo"
+        request.serialized_instance_format.should == "myformat"
+    end
+
+    it "should require a serialization format when serialized instance data is provided" do
+        lambda { 
+            Puppet::Indirector::Request.new(:myind, :find, "my key", :serialized_instance_data => 'foo')
+        }.should raise_error(ArgumentError)
+    end
+
+    it "should have an option for deserializing instance data" do
+        request = Puppet::Indirector::Request.new(:myind, :find, "my key", :serialized_instance_data => 'foo', :serialized_instance_format => "xml")
+        request.should respond_to(:deserialized_instance)
+    end
+
+    describe "when deserializing instance data" do
+        before do
+            @request = Puppet::Indirector::Request.new(:myind, :find, "my key")
+            @model = stub('model')
+            @request.stubs(:model).returns @model
+        end
+
+        it "should return nil unless serialization data has been provided" do
+            @request.deserialized_instance.should be_nil
+        end
+
+        it "should return the results of converting from the format specified by the deserialization format" do
+            @model.expects(:convert_from).with("myformat", "mydata").returns "myobject"
+
+            @request.serialized_instance_data = "mydata"
+            @request.serialized_instance_format = "myformat"
+            @request.deserialized_instance.should == "myobject"
+        end
+
+        it "should convert and return multiple instances if the request is plural" do
+            @model.expects(:convert_from_multiple).with("myformat", "mydata").returns "myobjects"
+
+            @request.expects(:plural?).returns true
+
+            @request.serialized_instance_data = "mydata"
+            @request.serialized_instance_format = "myformat"
+            @request.deserialized_instance.should == "myobjects"
+        end
+    end
+
+
     describe "when building a query string from its options" do
         before do
             @request = Puppet::Indirector::Request.new(:myind, :find, "my key")

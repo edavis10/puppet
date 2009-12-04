@@ -10,14 +10,27 @@ class Puppet::Indirector::Request
 
     attr_accessor :server, :port, :uri, :protocol
 
+    attr_accessor :serialized_instance_data, :serialized_instance_format
+
     attr_reader :indirection_name
 
-    OPTION_ATTRIBUTES = [:ip, :node, :authenticated, :ignore_terminus, :ignore_cache, :instance, :environment]
+    OPTION_ATTRIBUTES = [:ip, :node, :authenticated, :ignore_terminus, :ignore_cache, :instance, :environment,
+        :serialized_instance_data, :serialized_instance_format]
 
     # Is this an authenticated request?
     def authenticated?
         # Double negative, so we just get true or false
         ! ! authenticated
+    end
+
+    def deserialized_instance
+        return nil unless serialized_instance_data
+
+        if plural?
+            model.convert_from_multiple(serialized_instance_format, serialized_instance_data)
+        else
+            model.convert_from(serialized_instance_format, serialized_instance_data)
+        end
     end
 
     def environment
@@ -151,6 +164,10 @@ class Puppet::Indirector::Request
                 send(attribute.to_s + "=", options[attribute])
                 options.delete(attribute)
             end
+        end
+
+        if serialized_instance_data and ! serialized_instance_format
+            raise ArgumentError, "Specified serialized instance data with no format; could not deserialize"
         end
     end
 
