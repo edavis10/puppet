@@ -13,7 +13,7 @@ class Puppet::Checksum
 
     extend Puppet::RouteManager
 
-    indirects :checksum
+    routes :checksum
 
     attr_reader :algorithm, :content
 

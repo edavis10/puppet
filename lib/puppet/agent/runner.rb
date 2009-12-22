@@ -6,7 +6,7 @@ require 'puppet/route_manager'
 # puppetrun to kick off agents remotely.
 class Puppet::Agent::Runner
     extend Puppet::RouteManager
-    indirects :runner, :repository_class => :rest
+    routes :runner, :repository_class => :rest
 
     attr_reader :status, :background, :options
 

@@ -8,7 +8,7 @@ require 'puppet/route_manager/rest'
 # a fake class that will be indirected via REST
 class Puppet::TestIndirectedFoo
     extend Puppet::RouteManager
-    indirects :test_indirected_foo, :repository_setting => :test_indirected_foo_repository
+    routes :test_indirected_foo, :repository_setting => :test_indirected_foo_repository
 
     attr_reader :value
     attr_accessor :name

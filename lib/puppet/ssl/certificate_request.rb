@@ -5,7 +5,7 @@ class Puppet::SSL::CertificateRequest < Puppet::SSL::Base
     wraps OpenSSL::X509::Request
 
     extend Puppet::RouteManager
-    indirects :certificate_request, :repository_class => :file
+    routes :certificate_request, :repository_class => :file
 
     # Convert a string into an instance.
     def self.from_s(string)

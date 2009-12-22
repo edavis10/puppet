@@ -8,7 +8,7 @@ require 'puppet/route_manager'
 class Puppet::Transaction::Report
     extend Puppet::RouteManager
 
-    indirects :report, :repository_class => :processor
+    routes :report, :repository_class => :processor
 
     attr_accessor :logs, :metrics, :time, :host
 

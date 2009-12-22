@@ -13,7 +13,7 @@ describe Puppet::RouteManager, " when available to a model" do
     end
 
     it "should provide a way for the model to register an router under a name" do
-        @thingie.should respond_to(:indirects)
+        @thingie.should respond_to(:routes)
     end
 end
 
@@ -29,33 +29,33 @@ describe Puppet::RouteManager, "when registering an router" do
     end
 
     it "should require a name when registering a model" do
-        Proc.new {@thingie.send(:indirects) }.should raise_error(ArgumentError)
+        Proc.new {@thingie.send(:routes) }.should raise_error(ArgumentError)
     end
 
     it "should create an router instance to manage each indirecting model" do
-        @router = @thingie.indirects(:test)
+        @router = @thingie.routes(:test)
         @router.should be_instance_of(Puppet::RouteManager::Router)
     end
 
     it "should not allow a model to register under multiple names" do
         # Keep track of the router instance so we can delete it on cleanup
-        @router = @thingie.indirects :first
-        Proc.new { @thingie.indirects :second }.should raise_error(ArgumentError)
+        @router = @thingie.routes :first
+        Proc.new { @thingie.routes :second }.should raise_error(ArgumentError)
     end
 
     it "should make the router available via an accessor" do
-        @router = @thingie.indirects :first
+        @router = @thingie.routes :first
         @thingie.router.should equal(@router)
     end
 
     it "should pass any provided options to the router during initialization" do
         klass = mock 'repository class'
         Puppet::RouteManager::Router.expects(:new).with(@thingie, :first, {:some => :options})
-        @router = @thingie.indirects :first, :some => :options
+        @router = @thingie.routes :first, :some => :options
     end
 
     it "should extend the class with the Format Handler" do
-        @router = @thingie.indirects :first
+        @router = @thingie.routes :first
         @thingie.metaclass.ancestors.should be_include(Puppet::Network::FormatHandler)
     end
 
@@ -91,7 +91,7 @@ describe Puppet::RouteManager, "when redirecting a model" do
                 @name = name
             end
         end
-        @router = @thingie.send(:indirects, :test)
+        @router = @thingie.send(:routes, :test)
     end
 
     it "should include the Envelope module in the model" do

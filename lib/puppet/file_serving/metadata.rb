@@ -15,7 +15,7 @@ class Puppet::FileServing::Metadata < Puppet::FileServing::Base
     include Puppet::Util::Checksums
 
     extend Puppet::RouteManager
-    indirects :file_metadata, :extend => Puppet::FileServing::RouterHooks
+    routes :file_metadata, :extend => Puppet::FileServing::RouterHooks
 
     attr_reader :path, :owner, :group, :mode, :checksum_type, :checksum, :ftype, :destination
 

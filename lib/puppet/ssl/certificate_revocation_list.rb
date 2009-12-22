@@ -6,7 +6,7 @@ class Puppet::SSL::CertificateRevocationList < Puppet::SSL::Base
     wraps OpenSSL::X509::CRL
 
     extend Puppet::RouteManager
-    indirects :certificate_revocation_list, :repository_class => :file
+    routes :certificate_revocation_list, :repository_class => :file
 
     # Convert a string into an instance.
     def self.from_s(string)

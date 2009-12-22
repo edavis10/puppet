@@ -12,7 +12,7 @@ require 'puppet/file_serving/router_hooks'
 # asked for.
 class Puppet::FileServing::Content < Puppet::FileServing::Base
     extend Puppet::RouteManager
-    indirects :file_content, :extend => Puppet::FileServing::RouterHooks
+    routes :file_content, :extend => Puppet::FileServing::RouterHooks
 
     attr_writer :content
 

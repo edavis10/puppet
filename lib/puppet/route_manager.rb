@@ -1,7 +1,7 @@
 # Manage routers to termini.  They are organized in terms of routers -
 # - e.g., configuration, node, file, certificate -- and each router has one
 # or more repository types defined.  The router is configured via the
-# +indirects+ method, which will be called by the class extending itself
+# +routes+ method, which will be called by the class extending itself
 # with this module.
 module Puppet::RouteManager
     # LAK:FIXME We need to figure out how to handle documentation for the
@@ -12,12 +12,12 @@ module Puppet::RouteManager
     require 'puppet/route_manager/envelope'
     require 'puppet/network/format_handler'
 
-    # Declare that the including class indirects its methods to
+    # Declare that the including class routes its methods to
     # this repository.  The repository name must be the name of a Puppet
     # default, not the value -- if it's the value, then it gets
     # evaluated at parse time, which is before the user has had a chance
     # to override it.
-    def indirects(router, options = {})
+    def routes(router, options = {})
         raise(ArgumentError, "Already handling router for %s; cannot also handle %s" % [@router.name, router]) if defined?(@router) and @router
         # populate this class with the various new methods
         extend ClassMethods

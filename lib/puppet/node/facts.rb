@@ -17,7 +17,7 @@ class Puppet::Node::Facts
     end
 
     # Use the node source as the router repository.
-    indirects :facts, :repository_class => :facter, :extend => NodeExpirer
+    routes :facts, :repository_class => :facter, :extend => NodeExpirer
 
     attr_accessor :name, :values
 
