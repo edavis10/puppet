@@ -1,7 +1,7 @@
 require 'puppet/route_manager/repository'
 require 'puppet/util/file_locking'
 
-# The base class for YAML router termini.
+# The base class for YAML router repositories.
 class Puppet::RouteManager::Yaml < Puppet::RouteManager::Repository
     include Puppet::Util::FileLocking
 

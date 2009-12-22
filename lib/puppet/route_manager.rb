@@ -1,4 +1,4 @@
-# Manage routers to termini.  They are organized in terms of routers -
+# Manage routes to repositories.  They are organized in terms of routers -
 # - e.g., configuration, node, file, certificate -- and each router has one
 # or more repository types defined.  The router is configured via the
 # +routes+ method, which will be called by the class extending itself

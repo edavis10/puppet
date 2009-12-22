@@ -175,7 +175,7 @@ module Puppet
             Requires that ``puppetqd`` be running and that 'PSON' support for ruby be installed.",
             :hook => proc do |value|
                 if value
-                    # This reconfigures the terminii for Node, Facts, and Catalog
+                    # This reconfigures the repositories for Node, Facts, and Catalog
                     Puppet.settings[:storeconfigs] = true
 
                     # But then we modify the configuration

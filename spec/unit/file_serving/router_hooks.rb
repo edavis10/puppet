@@ -15,7 +15,7 @@ describe Puppet::FileServing::RouterHooks do
         @request = stub 'request', :key => "mymod/myfile", :options => {:node => "whatever"}, :server => nil, :protocol => nil
     end
 
-    describe "when being used to select termini" do
+    describe "when being used to select repositiries" do
         it "should return :file if the request key is fully qualified" do
             @request.expects(:key).returns "#{File::SEPARATOR}foo"
             @object.select_repository(@request).should == :file

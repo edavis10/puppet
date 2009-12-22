@@ -5,7 +5,7 @@
 require 'puppet/file_serving'
 require 'puppet/file_serving/fileset'
 
-# Define some common methods for FileServing termini.
+# Define some common methods for FileServing repositories.
 module Puppet::FileServing::RepositoryHelper
     # Create model instances for all files in a fileset.
     def path2instances(request, *paths)
