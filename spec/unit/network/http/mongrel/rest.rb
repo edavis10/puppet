@@ -33,7 +33,7 @@ describe "Puppet::Network::HTTP::MongrelREST" do
             @response.stubs(:start).yields(@head, @body)
             @model_class = stub('indirected model class')
             @mongrel = stub('mongrel http server', :register => true)
-            Puppet::Indirector::Indirection.stubs(:model).with(:foo).returns(@model_class)
+            Puppet::RouteManager::Router.stubs(:model).with(:foo).returns(@model_class)
             @handler = Puppet::Network::HTTP::MongrelREST.new(:server => @mongrel, :handler => :foo)
         end
 

@@ -41,7 +41,7 @@ describe Puppet::SSL::Host do
             @host.generate_key
         end
 
-        it "should save the key such that the Indirector can find it" do
+        it "should save the key such that the RouteManager can find it" do
             @host.generate_key
 
             Puppet::SSL::Key.find(@host.name).content.to_s.should == @host.key.to_s
@@ -58,7 +58,7 @@ describe Puppet::SSL::Host do
             @host.generate_certificate_request
         end
 
-        it "should save the certificate request such that the Indirector can find it" do
+        it "should save the certificate request such that the RouteManager can find it" do
             @host.generate_certificate_request
 
             Puppet::SSL::CertificateRequest.find(@host.name).content.to_s.should == @host.certificate_request.to_s

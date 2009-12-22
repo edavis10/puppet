@@ -66,17 +66,17 @@ describe Puppet::FileServing::Fileset, " when initializing" do
         Puppet::FileServing::Fileset.new("/some/file").links.should == :manage
     end
 
-    it "should support using an Indirector Request for its options" do
+    it "should support using an RouteManager Request for its options" do
         File.expects(:lstat).with("/some/file").returns stub("stat")
-        request = Puppet::Indirector::Request.new(:file_serving, :find, "foo")
+        request = Puppet::RouteManager::Request.new(:file_serving, :find, "foo")
         lambda { Puppet::FileServing::Fileset.new("/some/file", request) }.should_not raise_error
     end
 
-    describe "using an indirector request" do
+    describe "using an route_manager request" do
         before do
             File.stubs(:lstat).returns stub("stat")
             @values = {:links => :manage, :ignore => %w{a b}, :recurse => true, :recurselimit => 1234}
-            @request = Puppet::Indirector::Request.new(:file_serving, :find, "foo")
+            @request = Puppet::RouteManager::Request.new(:file_serving, :find, "foo")
         end
 
         [:recurse, :recurselimit, :ignore, :links].each do |option|

@@ -21,7 +21,7 @@ describe Puppet::Network::Server do
 
     describe "when initializing" do
         before do
-            Puppet::Indirector::Indirection.stubs(:model).returns mock('indirection')
+            Puppet::RouteManager::Router.stubs(:model).returns mock('router')
             Puppet::Network::Handler.stubs(:handler).returns mock('xmlrpc_handler')
             Puppet.settings.stubs(:value).with(:bindaddress).returns("")
             Puppet.settings.stubs(:value).with(:masterport).returns('')
@@ -241,66 +241,66 @@ describe Puppet::Network::Server do
         end
     end
 
-    describe "when managing indirection registrations" do
+    describe "when managing router registrations" do
         before do
-            Puppet::Indirector::Indirection.stubs(:model).returns mock('indirection')
+            Puppet::RouteManager::Router.stubs(:model).returns mock('router')
         end
 
-        it "should allow registering an indirection for client access by specifying its indirection name" do
+        it "should allow registering an router for client access by specifying its router name" do
             lambda { @server.register(:foo) }.should_not raise_error
         end
 
-        it "should require that the indirection be valid" do
-            Puppet::Indirector::Indirection.expects(:model).with(:foo).returns nil
+        it "should require that the router be valid" do
+            Puppet::RouteManager::Router.expects(:model).with(:foo).returns nil
             lambda { @server.register(:foo) }.should raise_error(ArgumentError)
         end
 
-        it "should require at least one indirection name when registering indirections for client access" do
+        it "should require at least one router name when registering routers for client access" do
             lambda { @server.register }.should raise_error(ArgumentError)
         end
 
-        it "should allow for numerous indirections to be registered at once for client access" do
+        it "should allow for numerous routers to be registered at once for client access" do
             lambda { @server.register(:foo, :bar, :baz) }.should_not raise_error
         end
 
-        it "should allow the use of indirection names to specify which indirections are to be no longer accessible to clients" do
+        it "should allow the use of router names to specify which routers are to be no longer accessible to clients" do
             @server.register(:foo)
             lambda { @server.unregister(:foo) }.should_not raise_error
         end
 
-        it "should leave other indirections accessible to clients when turning off indirections" do
+        it "should leave other routers accessible to clients when turning off routers" do
             @server.register(:foo, :bar)
             @server.unregister(:foo)
             lambda { @server.unregister(:bar)}.should_not raise_error
         end
 
-        it "should allow specifying numerous indirections which are to be no longer accessible to clients" do
+        it "should allow specifying numerous routers which are to be no longer accessible to clients" do
             @server.register(:foo, :bar)
             lambda { @server.unregister(:foo, :bar) }.should_not raise_error
         end
 
-        it "should not turn off any indirections if given unknown indirection names to turn off" do
+        it "should not turn off any routers if given unknown router names to turn off" do
             @server.register(:foo, :bar)
             lambda { @server.unregister(:foo, :bar, :baz) }.should raise_error(ArgumentError)
             lambda { @server.unregister(:foo, :bar) }.should_not raise_error
         end
 
-        it "should not allow turning off unknown indirection names" do
+        it "should not allow turning off unknown router names" do
             @server.register(:foo, :bar)
             lambda { @server.unregister(:baz) }.should raise_error(ArgumentError)
         end
 
-        it "should disable client access immediately when turning off indirections" do
+        it "should disable client access immediately when turning off routers" do
             @server.register(:foo, :bar)
             @server.unregister(:foo)
             lambda { @server.unregister(:foo) }.should raise_error(ArgumentError)
         end
 
-        it "should allow turning off all indirections at once" do
+        it "should allow turning off all routers at once" do
             @server.register(:foo, :bar)
             @server.unregister
-            [ :foo, :bar, :baz].each do |indirection|
-                lambda { @server.unregister(indirection) }.should raise_error(ArgumentError)
+            [ :foo, :bar, :baz].each do |router|
+                lambda { @server.unregister(router) }.should raise_error(ArgumentError)
             end
         end
     end
@@ -329,8 +329,8 @@ describe Puppet::Network::Server do
         @server.port.should == 31337
     end
 
-    it "should allow for multiple configurations, each handling different indirections" do
-        Puppet::Indirector::Indirection.stubs(:model).returns mock('indirection')
+    it "should allow for multiple configurations, each handling different routers" do
+        Puppet::RouteManager::Router.stubs(:model).returns mock('router')
 
         @server2 = Puppet::Network::Server.new(:port => 31337)
         @server.register(:foo, :bar)
@@ -379,7 +379,7 @@ describe Puppet::Network::Server do
             lambda { @server.unregister_xmlrpc(:foo, :bar) }.should_not raise_error
         end
 
-        it "should not turn off any indirections if given unknown namespaces to turn off" do
+        it "should not turn off any routers if given unknown namespaces to turn off" do
             @server.register_xmlrpc(:foo, :bar)
             lambda { @server.unregister_xmlrpc(:foo, :bar, :baz) }.should raise_error(ArgumentError)
             lambda { @server.unregister_xmlrpc(:foo, :bar) }.should_not raise_error
@@ -399,8 +399,8 @@ describe Puppet::Network::Server do
         it "should allow turning off all namespaces at once" do
             @server.register_xmlrpc(:foo, :bar)
             @server.unregister_xmlrpc
-            [ :foo, :bar, :baz].each do |indirection|
-                lambda { @server.unregister_xmlrpc(indirection) }.should raise_error(ArgumentError)
+            [ :foo, :bar, :baz].each do |router|
+                lambda { @server.unregister_xmlrpc(router) }.should raise_error(ArgumentError)
             end
         end
     end
@@ -450,7 +450,7 @@ describe Puppet::Network::Server do
 
     describe "when listening is being turned on" do
         before do
-            Puppet::Indirector::Indirection.stubs(:model).returns mock('indirection')
+            Puppet::RouteManager::Router.stubs(:model).returns mock('router')
             Puppet::Network::Handler.stubs(:handler).returns mock('xmlrpc_handler')
 
             @server = Puppet::Network::Server.new(:port => 31337, :handlers => [:node], :xmlrpc_handlers => [:master])
@@ -524,8 +524,8 @@ describe Puppet::Network::Server do
             @server.unlisten
         end
 
-        it "should not allow for indirections to be turned off" do
-            Puppet::Indirector::Indirection.stubs(:model).returns mock('indirection')
+        it "should not allow for routers to be turned off" do
+            Puppet::RouteManager::Router.stubs(:model).returns mock('router')
 
             @server.register(:foo)
             lambda { @server.unregister(:foo) }.should raise_error(RuntimeError)

@@ -13,7 +13,7 @@ describe Puppet::Resource::Catalog do
         end
     end
 
-    describe "when using the indirector" do
+    describe "when using the route_manager" do
         after { Puppet::Util::Cacher.expire }
         before do
             # This is so the tests work w/out networking.
@@ -23,10 +23,10 @@ describe Puppet::Resource::Catalog do
 
 
         it "should be able to delegate to the :yaml terminus" do
-            Puppet::Resource::Catalog.indirection.stubs(:terminus_class).returns :yaml
+            Puppet::Resource::Catalog.router.stubs(:terminus_class).returns :yaml
 
             # Load now, before we stub the exists? method.
-            terminus = Puppet::Resource::Catalog.indirection.terminus(:yaml)
+            terminus = Puppet::Resource::Catalog.router.terminus(:yaml)
             terminus.expects(:path).with("me").returns "/my/yaml/file"
 
             FileTest.expects(:exist?).with("/my/yaml/file").returns false
@@ -34,10 +34,10 @@ describe Puppet::Resource::Catalog do
         end
 
         it "should be able to delegate to the :compiler terminus" do
-            Puppet::Resource::Catalog.indirection.stubs(:terminus_class).returns :compiler
+            Puppet::Resource::Catalog.router.stubs(:terminus_class).returns :compiler
 
             # Load now, before we stub the exists? method.
-            compiler = Puppet::Resource::Catalog.indirection.terminus(:compiler)
+            compiler = Puppet::Resource::Catalog.router.terminus(:compiler)
 
             node = mock 'node'
             node.stub_everything
@@ -51,7 +51,7 @@ describe Puppet::Resource::Catalog do
         it "should pass provided node information directly to the terminus" do
             terminus = mock 'terminus'
 
-            Puppet::Resource::Catalog.indirection.stubs(:terminus).returns terminus
+            Puppet::Resource::Catalog.router.stubs(:terminus).returns terminus
 
             node = mock 'node'
             terminus.expects(:find).with { |request| request.options[:use_node] == node }

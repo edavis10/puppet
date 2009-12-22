@@ -435,7 +435,7 @@ module Puppet
         },
         :rest_authconfig => [ "$confdir/auth.conf",
             "The configuration file that defines the rights to the different
-            rest indirections.  This can be used as a fine-grained
+            rest routers.  This can be used as a fine-grained
             authorization system for ``puppetmasterd``."
         ],
         :ca => [true, "Wether the master should function as a certificate authority."],

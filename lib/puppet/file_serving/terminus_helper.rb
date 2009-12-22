@@ -10,7 +10,7 @@ module Puppet::FileServing::TerminusHelper
     # Create model instances for all files in a fileset.
     def path2instances(request, *paths)
         filesets = paths.collect do |path|
-            # Filesets support indirector requests as an options collection
+            # Filesets support route_manager requests as an options collection
             Puppet::FileServing::Fileset.new(path, request)
         end
 

@@ -359,9 +359,9 @@ class TestScope < Test::Unit::TestCase
     # run, whether it's in the same scope as a collection or a different
     # scope.
     def test_storeandcollect
-        catalog_cache_class = Puppet::Resource::Catalog.indirection.cache_class
-        facts_cache_class = Puppet::Node::Facts.indirection.cache_class
-        node_cache_class = Puppet::Node.indirection.cache_class
+        catalog_cache_class = Puppet::Resource::Catalog.router.cache_class
+        facts_cache_class = Puppet::Node::Facts.router.cache_class
+        node_cache_class = Puppet::Node.router.cache_class
         Puppet[:storeconfigs] = true
         Puppet::Rails.init
         sleep 1

@@ -13,7 +13,7 @@ describe Puppet::FileServing::Content, " when finding files" do
 
     before do
         @test_class = Puppet::FileServing::Content
-        @indirection = Puppet::FileServing::Content.indirection
+        @router = Puppet::FileServing::Content.router
     end
 
     after { Puppet::Util::Cacher.expire }

@@ -14,7 +14,7 @@ describe Puppet::Checksum, " when using the file terminus" do
         @content = "this is some content"
         @sum = Puppet::Checksum.new(@content)
 
-        @file = Puppet::Checksum.indirection.terminus.path(@sum.checksum)
+        @file = Puppet::Checksum.router.terminus.path(@sum.checksum)
     end
 
     it "should store content at a path determined by its checksum" do

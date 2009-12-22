@@ -69,7 +69,7 @@ class Puppet::FileServing::Fileset
         @recurse = false
         @recurselimit = :infinite
 
-        if options.is_a?(Puppet::Indirector::Request)
+        if options.is_a?(Puppet::RouteManager::Request)
             initialize_from_request(options)
         else
             initialize_from_hash(options)

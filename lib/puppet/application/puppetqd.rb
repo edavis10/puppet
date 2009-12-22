@@ -2,7 +2,7 @@ require 'puppet'
 require 'puppet/daemon'
 require 'puppet/application'
 require 'puppet/resource/catalog'
-require 'puppet/indirector/catalog/queue'
+require 'puppet/route_manager/catalog/queue'
 require 'puppet/util'
 
 Puppet::Application.new(:puppetqd) do
@@ -45,7 +45,7 @@ Puppet::Application.new(:puppetqd) do
         Puppet.notice "Starting puppetqd %s" % Puppet.version
         Puppet::Resource::Catalog::Queue.subscribe do |catalog|
             # Once you have a Puppet::Resource::Catalog instance, calling save() on it should suffice
-            # to put it through to the database via its active_record indirector (which is determined
+            # to put it through to the database via its active_record route_manager (which is determined
             # by the terminus_class = :active_record setting above)
             benchmark(:notice, "Processing queued catalog for %s" % catalog.name) do
                 begin

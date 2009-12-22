@@ -67,21 +67,21 @@ describe Puppet::Network::HTTP::Handler do
             @handler.stubs(:content_type       ).returns("text/plain")
         end
 
-        it "should create an indirection request from the path, parameters, and http method" do
+        it "should create an router request from the path, parameters, and http method" do
             @handler.expects(:path).with(@request).returns "mypath"
             @handler.expects(:http_method).with(@request).returns "mymethod"
             @handler.expects(:params).with(@request).returns "myparams"
 
-            @handler.expects(:uri2indirection).with("mymethod", "mypath", "myparams").returns stub("request", :method => :find)
+            @handler.expects(:uri2router).with("mymethod", "mypath", "myparams").returns stub("request", :method => :find)
 
             @handler.stubs(:do_find)
 
             @handler.process(@request, @response)
         end
 
-        it "should call the 'do' method associated with the indirection method" do
+        it "should call the 'do' method associated with the router method" do
             request = stub 'request'
-            @handler.expects(:uri2indirection).returns request
+            @handler.expects(:uri2router).returns request
 
             request.expects(:method).returns "mymethod"
 
@@ -92,7 +92,7 @@ describe Puppet::Network::HTTP::Handler do
 
         it "should delegate authorization to the RestAuthorization layer" do
             request = stub 'request'
-            @handler.expects(:uri2indirection).returns request
+            @handler.expects(:uri2router).returns request
 
             request.expects(:method).returns "mymethod"
 
@@ -105,7 +105,7 @@ describe Puppet::Network::HTTP::Handler do
 
         it "should return 403 if the request is not authorized" do
             request = stub 'request'
-            @handler.expects(:uri2indirection).returns request
+            @handler.expects(:uri2router).returns request
 
             @handler.expects(:do_mymethod).never
 
@@ -117,7 +117,7 @@ describe Puppet::Network::HTTP::Handler do
         end
 
         it "should serialize a controller exception when an exception is thrown while finding the model instance" do
-            @handler.expects(:uri2indirection).returns stub("request", :method => :find)
+            @handler.expects(:uri2router).returns stub("request", :method => :find)
 
             @handler.expects(:do_find).raises(ArgumentError, "The exception")
             @handler.expects(:set_response).with { |response, body, status| body == "The exception" and status == 400 }
@@ -141,7 +141,7 @@ describe Puppet::Network::HTTP::Handler do
 
         describe "when finding a model instance" do
             before do
-                @irequest = stub 'indirection_request', :method => :find, :indirection_name => "my_handler", :to_hash => {}, :key => "my_result", :model => @model_class
+                @irequest = stub 'router_request', :method => :find, :router_name => "my_handler", :to_hash => {}, :key => "my_result", :model => @model_class
 
                 @model_class.stubs(:find).returns @result
 
@@ -152,7 +152,7 @@ describe Puppet::Network::HTTP::Handler do
                 Puppet::Network::FormatHandler.stubs(:format).with("one").returns @oneformat
             end
 
-            it "should use the indirection request to find the model class" do
+            it "should use the router request to find the model class" do
                 @irequest.expects(:model).returns @model_class
 
                 @handler.do_find(@irequest, @request, @response)
@@ -242,7 +242,7 @@ describe Puppet::Network::HTTP::Handler do
 
         describe "when searching for model instances" do
             before do
-                @irequest = stub 'indirection_request', :method => :find, :indirection_name => "my_handler", :to_hash => {}, :key => "key", :model => @model_class
+                @irequest = stub 'router_request', :method => :find, :router_name => "my_handler", :to_hash => {}, :key => "key", :model => @model_class
 
                 @result1 = mock 'result1'
                 @result2 = mock 'results'
@@ -258,7 +258,7 @@ describe Puppet::Network::HTTP::Handler do
                 Puppet::Network::FormatHandler.stubs(:format).with("one").returns @oneformat
             end
 
-            it "should use the indirection request to find the model" do
+            it "should use the router request to find the model" do
                 @irequest.expects(:model).returns @model_class
 
                 @handler.do_search(@irequest, @request, @response)
@@ -312,13 +312,13 @@ describe Puppet::Network::HTTP::Handler do
 
         describe "when destroying a model instance" do
             before do
-                @irequest = stub 'indirection_request', :method => :destroy, :indirection_name => "my_handler", :to_hash => {}, :key => "key", :model => @model_class
+                @irequest = stub 'router_request', :method => :destroy, :router_name => "my_handler", :to_hash => {}, :key => "key", :model => @model_class
 
                 @result = stub 'result', :render => "the result"
                 @model_class.stubs(:destroy).returns @result
             end
 
-            it "should use the indirection request to find the model" do
+            it "should use the router request to find the model" do
                 @irequest.expects(:model).returns @model_class
 
                 @handler.do_destroy(@irequest, @request, @response)
@@ -357,7 +357,7 @@ describe Puppet::Network::HTTP::Handler do
 
         describe "when saving a model instance" do
             before do
-                @irequest = stub 'indirection_request', :method => :save, :indirection_name => "my_handler", :to_hash => {}, :key => "key", :model => @model_class
+                @irequest = stub 'router_request', :method => :save, :router_name => "my_handler", :to_hash => {}, :key => "key", :model => @model_class
                 @handler.stubs(:body).returns('my stuff')
                 @handler.stubs(:content_type_header).returns("text/yaml")
 
@@ -372,7 +372,7 @@ describe Puppet::Network::HTTP::Handler do
                 Puppet::Network::FormatHandler.stubs(:format).with("yaml").returns @yamlformat
             end
 
-            it "should use the indirection request to find the model" do
+            it "should use the router request to find the model" do
                 @irequest.expects(:model).returns @model_class
 
                 @handler.do_save(@irequest, @request, @response)

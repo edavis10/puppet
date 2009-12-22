@@ -4,7 +4,7 @@ require 'puppet/ssl/base'
 class Puppet::SSL::CertificateRequest < Puppet::SSL::Base
     wraps OpenSSL::X509::Request
 
-    extend Puppet::Indirector
+    extend Puppet::RouteManager
     indirects :certificate_request, :terminus_class => :file
 
     # Convert a string into an instance.

@@ -1,6 +1,6 @@
-# This is the file that we use to add indirection to all the SSL Certificate classes.
+# This is the file that we use to add router to all the SSL Certificate classes.
 
-require 'puppet/indirector'
+require 'puppet/route_manager'
 
-OpenSSL::PKey::RSA.extend Puppet::Indirector
+OpenSSL::PKey::RSA.extend Puppet::RouteManager
 OpenSSL::PKey::RSA.indirects :ssl_rsa, :terminus_class => :file

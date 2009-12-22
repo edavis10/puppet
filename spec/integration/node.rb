@@ -8,17 +8,17 @@ require File.dirname(__FILE__) + '/../spec_helper'
 require 'puppet/node'
 
 describe Puppet::Node do
-    describe "when delegating indirection calls" do
+    describe "when delegating router calls" do
         before do
             @name = "me"
             @node = Puppet::Node.new(@name)
         end
 
         it "should be able to use the exec terminus" do
-            Puppet::Node.indirection.stubs(:terminus_class).returns :exec
+            Puppet::Node.router.stubs(:terminus_class).returns :exec
 
             # Load now so we can stub
-            terminus = Puppet::Node.indirection.terminus(:exec)
+            terminus = Puppet::Node.router.terminus(:exec)
 
             terminus.expects(:query).with(@name).returns "myresults"
             terminus.expects(:translate).with(@name, "myresults").returns "translated_results"
@@ -28,10 +28,10 @@ describe Puppet::Node do
         end
 
         it "should be able to use the yaml terminus" do
-            Puppet::Node.indirection.stubs(:terminus_class).returns :yaml
+            Puppet::Node.router.stubs(:terminus_class).returns :yaml
 
             # Load now, before we stub the exists? method.
-            terminus = Puppet::Node.indirection.terminus(:yaml)
+            terminus = Puppet::Node.router.terminus(:yaml)
 
             terminus.expects(:path).with(@name).returns "/my/yaml/file"
 
@@ -40,14 +40,14 @@ describe Puppet::Node do
         end
 
         it "should have an ldap terminus" do
-            Puppet::Node.indirection.terminus(:ldap).should_not be_nil
+            Puppet::Node.router.terminus(:ldap).should_not be_nil
         end
 
         it "should be able to use the plain terminus" do
-            Puppet::Node.indirection.stubs(:terminus_class).returns :plain
+            Puppet::Node.router.stubs(:terminus_class).returns :plain
 
             # Load now, before we stub the exists? method.
-            Puppet::Node.indirection.terminus(:plain)
+            Puppet::Node.router.terminus(:plain)
 
             Puppet::Node.expects(:new).with(@name).returns @node
 
@@ -57,9 +57,9 @@ describe Puppet::Node do
         describe "and using the memory terminus" do
             before do
                 @name = "me"
-                @old_terminus = Puppet::Node.indirection.terminus_class
-                @terminus = Puppet::Node.indirection.terminus(:memory)
-                Puppet::Node.indirection.stubs(:terminus).returns @terminus
+                @old_terminus = Puppet::Node.router.terminus_class
+                @terminus = Puppet::Node.router.terminus(:memory)
+                Puppet::Node.router.stubs(:terminus).returns @terminus
                 @node = Puppet::Node.new(@name)
             end
 

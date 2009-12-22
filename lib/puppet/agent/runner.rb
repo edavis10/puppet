@@ -1,11 +1,11 @@
 require 'puppet/agent'
 require 'puppet/configurer'
-require 'puppet/indirector'
+require 'puppet/route_manager'
 
 # A basic class for running the agent.  Used by
 # puppetrun to kick off agents remotely.
 class Puppet::Agent::Runner
-    extend Puppet::Indirector
+    extend Puppet::RouteManager
     indirects :runner, :terminus_class => :rest
 
     attr_reader :status, :background, :options

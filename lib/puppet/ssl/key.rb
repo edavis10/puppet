@@ -1,11 +1,11 @@
 require 'puppet/ssl/base'
-require 'puppet/indirector'
+require 'puppet/route_manager'
 
 # Manage private and public keys as a pair.
 class Puppet::SSL::Key < Puppet::SSL::Base
     wraps OpenSSL::PKey::RSA
 
-    extend Puppet::Indirector
+    extend Puppet::RouteManager
     indirects :key, :terminus_class => :file
 
     # Because of how the format handler class is included, this

@@ -10,11 +10,11 @@ describe Puppet::FileServing::Content do
     end
 
     it "should indirect file_content" do
-        Puppet::FileServing::Content.indirection.name.should == :file_content
+        Puppet::FileServing::Content.router.name.should == :file_content
     end
 
-    it "should should include the IndirectionHooks module in its indirection" do
-        Puppet::FileServing::Content.indirection.metaclass.included_modules.should include(Puppet::FileServing::IndirectionHooks)
+    it "should should include the RouterHooks module in its router" do
+        Puppet::FileServing::Content.router.metaclass.included_modules.should include(Puppet::FileServing::RouterHooks)
     end
 
     it "should only support the raw format" do

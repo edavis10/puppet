@@ -9,8 +9,8 @@ describe "Puppet::FileServing::Files", :shared => true do
 
         # It appears that the mocking somehow interferes with the caching subsystem.
         # This mock somehow causes another terminus to get generated.
-        term = @indirection.terminus(:rest)
-        @indirection.stubs(:terminus).with(:rest).returns term
+        term = @router.terminus(:rest)
+        @router.stubs(:terminus).with(:rest).returns term
         term.expects(:find)
         @test_class.find(uri)
     end
@@ -20,7 +20,7 @@ describe "Puppet::FileServing::Files", :shared => true do
         Puppet.settings.stubs(:value).returns "foo"
         Puppet.settings.stubs(:value).with(:name).returns("puppetd")
         Puppet.settings.stubs(:value).with(:modulepath).returns("")
-        @indirection.terminus(:rest).expects(:find)
+        @router.terminus(:rest).expects(:find)
         @test_class.find(uri)
     end
 
@@ -30,20 +30,20 @@ describe "Puppet::FileServing::Files", :shared => true do
         Puppet.settings.stubs(:value).returns ""
         Puppet.settings.stubs(:value).with(:name).returns("puppet")
         Puppet.settings.stubs(:value).with(:fileserverconfig).returns("/whatever")
-        @indirection.terminus(:file_server).expects(:find)
-        @indirection.terminus(:file_server).stubs(:authorized?).returns(true)
+        @router.terminus(:file_server).expects(:find)
+        @router.terminus(:file_server).stubs(:authorized?).returns(true)
         @test_class.find(uri)
     end
 
     it "should use the file terminus when the 'file' URI scheme is used" do
         uri = "file:///fakemod/my/file"
-        @indirection.terminus(:file).expects(:find)
+        @router.terminus(:file).expects(:find)
         @test_class.find(uri)
     end
 
     it "should use the file terminus when a fully qualified path is provided" do
         uri = "/fakemod/my/file"
-        @indirection.terminus(:file).expects(:find)
+        @router.terminus(:file).expects(:find)
         @test_class.find(uri)
     end
 
@@ -51,9 +51,9 @@ describe "Puppet::FileServing::Files", :shared => true do
         uri = "fakemod/my/file"
         mount = mock 'mount'
         config = stub 'configuration', :split_path => [mount, "eh"]
-        @indirection.terminus(:file_server).stubs(:configuration).returns config
+        @router.terminus(:file_server).stubs(:configuration).returns config
 
-        @indirection.terminus(:file_server).expects(:find)
+        @router.terminus(:file_server).expects(:find)
         mount.expects(:allowed?).returns(true)
         @test_class.find(uri, :node => "foo", :ip => "bar")
     end

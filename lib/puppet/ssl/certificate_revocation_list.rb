@@ -1,11 +1,11 @@
 require 'puppet/ssl/base'
-require 'puppet/indirector'
+require 'puppet/route_manager'
 
 # Manage the CRL.
 class Puppet::SSL::CertificateRevocationList < Puppet::SSL::Base
     wraps OpenSSL::X509::CRL
 
-    extend Puppet::Indirector
+    extend Puppet::RouteManager
     indirects :certificate_revocation_list, :terminus_class => :file
 
     # Convert a string into an instance.
@@ -44,7 +44,7 @@ class Puppet::SSL::CertificateRevocationList < Puppet::SSL::Base
     end
 
     # The name doesn't actually matter; there's only one CRL.
-    # We just need the name so our Indirector stuff all works more easily.
+    # We just need the name so our RouteManager stuff all works more easily.
     def initialize(fakename)
         @name = "crl"
     end

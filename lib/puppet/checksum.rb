@@ -4,14 +4,14 @@
 
 require 'puppet'
 require 'puppet/util/checksums'
-require 'puppet/indirector'
+require 'puppet/route_manager'
 
 # A checksum class to model translating checksums to file paths.  This
 # is the new filebucket.
 class Puppet::Checksum
     include Puppet::Util::Checksums
 
-    extend Puppet::Indirector
+    extend Puppet::RouteManager
 
     indirects :checksum
 
@@ -46,7 +46,7 @@ class Puppet::Checksum
         self.algorithm = algorithm
     end
 
-    # This is here so the Indirector::File terminus works correctly.
+    # This is here so the RouteManager::File terminus works correctly.
     def name
         checksum
     end

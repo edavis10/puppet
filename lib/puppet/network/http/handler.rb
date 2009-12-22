@@ -61,11 +61,11 @@ module Puppet::Network::HTTP::Handler
 
     # handle an HTTP request
     def process(request, response)
-        indirection_request = uri2indirection(http_method(request), path(request), params(request))
+        router_request = uri2router(http_method(request), path(request), params(request))
 
-        check_authorization(indirection_request)
+        check_authorization(router_request)
 
-        send("do_%s" % indirection_request.method, indirection_request, request, response)
+        send("do_%s" % router_request.method, router_request, request, response)
     rescue Exception => e
         return do_exception(response, e)
     end
@@ -95,9 +95,9 @@ module Puppet::Network::HTTP::Handler
     end
 
     # Execute our find.
-    def do_find(indirection_request, request, response)
-        unless result = indirection_request.model.find(indirection_request.key, indirection_request.to_hash)
-            return do_exception(response, "Could not find %s %s" % [indirection_request.indirection_name, indirection_request.key], 404)
+    def do_find(router_request, request, response)
+        unless result = router_request.model.find(router_request.key, router_request.to_hash)
+            return do_exception(response, "Could not find %s %s" % [router_request.router_name, router_request.key], 404)
         end
 
         # The encoding of the result must include the format to use,
@@ -110,34 +110,34 @@ module Puppet::Network::HTTP::Handler
     end
 
     # Execute our search.
-    def do_search(indirection_request, request, response)
-        result = indirection_request.model.search(indirection_request.key, indirection_request.to_hash)
+    def do_search(router_request, request, response)
+        result = router_request.model.search(router_request.key, router_request.to_hash)
 
         if result.nil? or (result.is_a?(Array) and result.empty?)
-            return do_exception(response, "Could not find instances in %s with '%s'" % [indirection_request.indirection_name, indirection_request.to_hash.inspect], 404)
+            return do_exception(response, "Could not find instances in %s with '%s'" % [router_request.router_name, router_request.to_hash.inspect], 404)
         end
 
         format = format_to_use(request)
         set_content_type(response, format)
 
-        set_response(response, indirection_request.model.render_multiple(format, result))
+        set_response(response, router_request.model.render_multiple(format, result))
     end
 
     # Execute our destroy.
-    def do_destroy(indirection_request, request, response)
-        result = indirection_request.model.destroy(indirection_request.key, indirection_request.to_hash)
+    def do_destroy(router_request, request, response)
+        result = router_request.model.destroy(router_request.key, router_request.to_hash)
 
         return_yaml_response(response, result)
     end
 
     # Execute our save.
-    def do_save(indirection_request, request, response)
+    def do_save(router_request, request, response)
         data = body(request).to_s
         raise ArgumentError, "No data to save" if !data or data.empty?
 
         format = request_format(request)
-        obj = indirection_request.model.convert_from(format, data)
-        result = save_object(indirection_request, obj)
+        obj = router_request.model.convert_from(format, data)
+        result = save_object(router_request, obj)
         return_yaml_response(response, result)
     end
 

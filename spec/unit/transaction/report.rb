@@ -8,24 +8,24 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 require 'puppet/transaction/report'
 
 describe Puppet::Transaction::Report, " when being indirect" do
-    it "should redirect :find to the indirection" do
-        @indirection = stub 'indirection', :name => :report
-        Puppet::Transaction::Report.stubs(:indirection).returns(@indirection)
-        @indirection.expects(:find)
+    it "should redirect :find to the router" do
+        @router = stub 'router', :name => :report
+        Puppet::Transaction::Report.stubs(:router).returns(@router)
+        @router.expects(:find)
         Puppet::Transaction::Report.find(:report)
     end
 
-    it "should redirect :save to the indirection" do
+    it "should redirect :save to the router" do
         Facter.stubs(:value).returns("eh")
-        @indirection = stub 'indirection', :name => :report
-        Puppet::Transaction::Report.stubs(:indirection).returns(@indirection)
+        @router = stub 'router', :name => :report
+        Puppet::Transaction::Report.stubs(:router).returns(@router)
         report = Puppet::Transaction::Report.new
-        @indirection.expects(:save)
+        @router.expects(:save)
         report.save
     end
 
     it "should default to the 'processor' terminus" do
-        Puppet::Transaction::Report.indirection.terminus_class.should == :processor
+        Puppet::Transaction::Report.router.terminus_class.should == :processor
     end
 
     it "should delegate its name attribute to its host method" do

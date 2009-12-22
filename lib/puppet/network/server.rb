@@ -75,25 +75,25 @@ class Puppet::Network::Server
         Puppet.settings.use(:main, :ssl, Puppet[:name])
     end
 
-    # Register handlers for REST networking, based on the Indirector.
-    def register(*indirections)
-        raise ArgumentError, "Indirection names are required." if indirections.empty?
-        indirections.flatten.each do |name|
-            Puppet::Indirector::Indirection.model(name) || raise(ArgumentError, "Cannot locate indirection '#{name}'.")
+    # Register handlers for REST networking, based on the RouteManager.
+    def register(*routers)
+        raise ArgumentError, "Router names are required." if routers.empty?
+        routers.flatten.each do |name|
+            Puppet::RouteManager::Router.model(name) || raise(ArgumentError, "Cannot locate router '#{name}'.")
             @routes[name.to_sym] = true
         end
     end
 
-    # Unregister Indirector handlers.
-    def unregister(*indirections)
-        raise "Cannot unregister indirections while server is listening." if listening?
-        indirections = @routes.keys if indirections.empty?
+    # Unregister RouteManager handlers.
+    def unregister(*routers)
+        raise "Cannot unregister routers while server is listening." if listening?
+        routers = @routes.keys if routers.empty?
 
-        indirections.flatten.each do |i|
-            raise(ArgumentError, "Indirection [%s] is unknown." % i) unless @routes[i.to_sym]
+        routers.flatten.each do |i|
+            raise(ArgumentError, "Router [%s] is unknown." % i) unless @routes[i.to_sym]
         end
 
-        indirections.flatten.each do |i|
+        routers.flatten.each do |i|
             @routes.delete(i.to_sym)
         end
     end

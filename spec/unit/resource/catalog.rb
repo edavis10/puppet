@@ -832,19 +832,19 @@ describe Puppet::Resource::Catalog, "when compiling" do
 
     describe "when indirecting" do
         before do
-            @indirection = stub 'indirection', :name => :catalog
+            @router = stub 'router', :name => :catalog
 
             Puppet::Util::Cacher.expire
         end
 
-        it "should redirect to the indirection for retrieval" do
-            Puppet::Resource::Catalog.stubs(:indirection).returns(@indirection)
-            @indirection.expects(:find)
+        it "should redirect to the router for retrieval" do
+            Puppet::Resource::Catalog.stubs(:router).returns(@router)
+            @router.expects(:find)
             Puppet::Resource::Catalog.find(:myconfig)
         end
 
         it "should default to the 'compiler' terminus" do
-            Puppet::Resource::Catalog.indirection.terminus_class.should == :compiler
+            Puppet::Resource::Catalog.router.terminus_class.should == :compiler
         end
 
         after do

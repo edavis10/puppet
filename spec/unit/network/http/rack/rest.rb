@@ -21,7 +21,7 @@ describe "Puppet::Network::HTTP::RackREST" do
     describe "when serving a request" do
         before :all do
             @model_class = stub('indirected model class')
-            Puppet::Indirector::Indirection.stubs(:model).with(:foo).returns(@model_class)
+            Puppet::RouteManager::Router.stubs(:model).with(:foo).returns(@model_class)
             @handler = Puppet::Network::HTTP::RackREST.new(:handler => :foo)
         end
 

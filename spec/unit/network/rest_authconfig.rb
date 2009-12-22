@@ -29,7 +29,7 @@ describe Puppet::Network::RestAuthConfig do
         @acl = stub_everything 'rights'
         @authconfig.rights = @acl
 
-        @request = stub 'request', :indirection_name => "path", :key => "to/resource", :ip => "127.0.0.1",
+        @request = stub 'request', :router_name => "path", :key => "to/resource", :ip => "127.0.0.1",
                                    :node => "me", :method => :save, :environment => :env, :authenticated => true
     end
 

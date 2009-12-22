@@ -13,7 +13,7 @@ describe Puppet::FileServing::Metadata, " when finding files" do
 
     before do
         @test_class = Puppet::FileServing::Metadata
-        @indirection = Puppet::FileServing::Metadata.indirection
+        @router = Puppet::FileServing::Metadata.router
     end
 
     after { Puppet::Util::Cacher.expire }

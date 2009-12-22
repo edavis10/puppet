@@ -38,7 +38,7 @@ describe Puppet::FileServing::TerminusHelper do
         @helper.path2instances(@request, "/first/file", "/second/file")
     end
 
-    it "should pass the indirection request to the Fileset at initialization" do
+    it "should pass the router request to the Fileset at initialization" do
         Puppet::FileServing::Fileset.expects(:new).with { |path, options| options == @request }.returns @fileset
         @helper.path2instances(@request, "/my/file")
     end

@@ -3,19 +3,19 @@
 #  Copyright (c) 2007. All rights reserved.
 
 require 'puppet'
-require 'puppet/indirector'
+require 'puppet/route_manager'
 require 'puppet/file_serving'
 require 'puppet/file_serving/base'
 require 'puppet/util/checksums'
-require 'puppet/file_serving/indirection_hooks'
+require 'puppet/file_serving/router_hooks'
 
 # A class that handles retrieving file metadata.
 class Puppet::FileServing::Metadata < Puppet::FileServing::Base
 
     include Puppet::Util::Checksums
 
-    extend Puppet::Indirector
-    indirects :file_metadata, :extend => Puppet::FileServing::IndirectionHooks
+    extend Puppet::RouteManager
+    indirects :file_metadata, :extend => Puppet::FileServing::RouterHooks
 
     attr_reader :path, :owner, :group, :mode, :checksum_type, :checksum, :ftype, :destination
 

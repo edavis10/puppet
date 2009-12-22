@@ -10,7 +10,7 @@ describe Puppet::Agent::Runner do
     end
 
     it "should indirect :runner" do
-        Puppet::Agent::Runner.indirection.name.should == :runner
+        Puppet::Agent::Runner.router.name.should == :runner
     end
 
     it "should use a configurer agent as its agent" do

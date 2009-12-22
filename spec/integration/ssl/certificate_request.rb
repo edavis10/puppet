@@ -43,7 +43,7 @@ describe Puppet::SSL::CertificateRequest do
         @csr.save
     end
 
-    it "should be able to find saved certificate requests via the Indirector" do
+    it "should be able to find saved certificate requests via the RouteManager" do
         @csr.generate(@key)
         @csr.save
 

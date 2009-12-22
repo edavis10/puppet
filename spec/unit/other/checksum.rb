@@ -74,8 +74,8 @@ describe Puppet::Checksum, " when initializing" do
 end
 
 describe Puppet::Checksum, " when using back-ends" do
-    it "should redirect using Puppet::Indirector" do
-        Puppet::Indirector::Indirection.instance(:checksum).model.should equal(Puppet::Checksum)
+    it "should redirect using Puppet::RouteManager" do
+        Puppet::RouteManager::Router.instance(:checksum).model.should equal(Puppet::Checksum)
     end
 
     it "should have a :save instance method" do

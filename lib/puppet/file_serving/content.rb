@@ -2,17 +2,17 @@
 #  Created by Luke Kanies on 2007-10-16.
 #  Copyright (c) 2007. All rights reserved.
 
-require 'puppet/indirector'
+require 'puppet/route_manager'
 require 'puppet/file_serving'
 require 'puppet/file_serving/base'
-require 'puppet/file_serving/indirection_hooks'
+require 'puppet/file_serving/router_hooks'
 
 # A class that handles retrieving file contents.
 # It only reads the file when its content is specifically
 # asked for.
 class Puppet::FileServing::Content < Puppet::FileServing::Base
-    extend Puppet::Indirector
-    indirects :file_content, :extend => Puppet::FileServing::IndirectionHooks
+    extend Puppet::RouteManager
+    indirects :file_content, :extend => Puppet::FileServing::RouterHooks
 
     attr_writer :content
 

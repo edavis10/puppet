@@ -9,16 +9,16 @@ describe Puppet::SSL::Key do
         @class = Puppet::SSL::Key
     end
 
-    it "should be extended with the Indirector module" do
-        @class.metaclass.should be_include(Puppet::Indirector)
+    it "should be extended with the RouteManager module" do
+        @class.metaclass.should be_include(Puppet::RouteManager)
     end
 
     it "should indirect key" do
-        @class.indirection.name.should == :key
+        @class.router.name.should == :key
     end
 
     it "should default to the :file terminus" do
-        @class.indirection.terminus_class.should == :file
+        @class.router.terminus_class.should == :file
     end
 
     it "should only support the text format" do

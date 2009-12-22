@@ -6,16 +6,16 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Puppet::Transaction::Report do
-    describe "when using the indirector" do
+    describe "when using the route_manager" do
         after do
             Puppet::Util::Cacher.expire
             Puppet.settings.stubs(:use)
         end
 
         it "should be able to delegate to the :processor terminus" do
-            Puppet::Transaction::Report.indirection.stubs(:terminus_class).returns :processor
+            Puppet::Transaction::Report.router.stubs(:terminus_class).returns :processor
 
-            terminus = Puppet::Transaction::Report.indirection.terminus(:processor)
+            terminus = Puppet::Transaction::Report.router.terminus(:processor)
 
             Facter.stubs(:value).returns "host.domain.com"
 

@@ -1,12 +1,12 @@
 require 'puppet/node'
-require 'puppet/indirector'
+require 'puppet/route_manager'
 
 # Manage a given node's facts.  This either accepts facts and stores them, or
 # returns facts for a given node.
 class Puppet::Node::Facts
-    # Set up indirection, so that nodes can be looked for in
+    # Set up router, so that nodes can be looked for in
     # the node sources.
-    extend Puppet::Indirector
+    extend Puppet::RouteManager
 
     # We want to expire any cached nodes if the facts are saved.
     module NodeExpirer
@@ -16,7 +16,7 @@ class Puppet::Node::Facts
         end
     end
 
-    # Use the node source as the indirection terminus.
+    # Use the node source as the router terminus.
     indirects :facts, :terminus_class => :facter, :extend => NodeExpirer
 
     attr_accessor :name, :values

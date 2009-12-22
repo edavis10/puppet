@@ -1,15 +1,15 @@
-require 'puppet/indirector'
+require 'puppet/route_manager'
 
 # A class for managing nodes, including their facts and environment.
 class Puppet::Node
     require 'puppet/node/facts'
     require 'puppet/node/environment'
 
-    # Set up indirection, so that nodes can be looked for in
+    # Set up router, so that nodes can be looked for in
     # the node sources.
-    extend Puppet::Indirector
+    extend Puppet::RouteManager
 
-    # Use the node source as the indirection terminus.
+    # Use the node source as the router terminus.
     indirects :node, :terminus_setting => :node_terminus, :doc => "Where to find node information.
         A node is composed of its name, its facts, and its environment."
 

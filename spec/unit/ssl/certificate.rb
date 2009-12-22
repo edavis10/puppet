@@ -13,12 +13,12 @@ describe Puppet::SSL::Certificate do
         @class.instance_variable_set("@ca_location", nil)
     end
 
-    it "should be extended with the Indirector module" do
-        @class.metaclass.should be_include(Puppet::Indirector)
+    it "should be extended with the RouteManager module" do
+        @class.metaclass.should be_include(Puppet::RouteManager)
     end
 
     it "should indirect certificate" do
-        @class.indirection.name.should == :certificate
+        @class.router.name.should == :certificate
     end
 
     it "should only support the text format" do

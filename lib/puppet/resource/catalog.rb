@@ -1,5 +1,5 @@
 require 'puppet/node'
-require 'puppet/indirector'
+require 'puppet/route_manager'
 require 'puppet/simple_graph'
 require 'puppet/transaction'
 
@@ -15,7 +15,7 @@ require 'puppet/util/tagging'
 class Puppet::Resource::Catalog < Puppet::SimpleGraph
     class DuplicateResourceError < Puppet::Error; end
 
-    extend Puppet::Indirector
+    extend Puppet::RouteManager
     indirects :catalog, :terminus_class => :compiler
 
     include Puppet::Util::Tagging

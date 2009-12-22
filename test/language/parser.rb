@@ -444,9 +444,9 @@ file { "/tmp/yayness":
     def test_virtualresources
         tests = [:virtual]
         if Puppet.features.rails?
-            catalog_cache_class = Puppet::Resource::Catalog.indirection.cache_class
-            facts_cache_class = Puppet::Node::Facts.indirection.cache_class
-            node_cache_class = Puppet::Node.indirection.cache_class
+            catalog_cache_class = Puppet::Resource::Catalog.router.cache_class
+            facts_cache_class = Puppet::Node::Facts.router.cache_class
+            node_cache_class = Puppet::Node.router.cache_class
             Puppet[:storeconfigs] = true
             tests << :exported
         end
@@ -510,9 +510,9 @@ file { "/tmp/yayness":
     def test_collections
         tests = [:virtual]
         if Puppet.features.rails?
-            catalog_cache_class = Puppet::Resource::Catalog.indirection.cache_class
-            facts_cache_class = Puppet::Node::Facts.indirection.cache_class
-            node_cache_class = Puppet::Node.indirection.cache_class
+            catalog_cache_class = Puppet::Resource::Catalog.router.cache_class
+            facts_cache_class = Puppet::Node::Facts.router.cache_class
+            node_cache_class = Puppet::Node.router.cache_class
             Puppet[:storeconfigs] = true
             tests << :exported
         end

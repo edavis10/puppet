@@ -10,11 +10,11 @@ describe Puppet::FileServing::Metadata do
     end
 
     it "should indirect file_metadata" do
-        Puppet::FileServing::Metadata.indirection.name.should == :file_metadata
+        Puppet::FileServing::Metadata.router.name.should == :file_metadata
     end
 
-    it "should should include the IndirectionHooks module in its indirection" do
-        Puppet::FileServing::Metadata.indirection.metaclass.included_modules.should include(Puppet::FileServing::IndirectionHooks)
+    it "should should include the RouterHooks module in its router" do
+        Puppet::FileServing::Metadata.router.metaclass.included_modules.should include(Puppet::FileServing::RouterHooks)
     end
 
     it "should have a method that triggers attribute collection" do

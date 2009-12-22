@@ -1,8 +1,8 @@
 
-require 'puppet/indirector'
+require 'puppet/route_manager'
 require 'puppet/util/instance_loader'
 
-# Implements a message queue client type plugin registry for use by the indirector facility.
+# Implements a message queue client type plugin registry for use by the route_manager facility.
 # Client modules for speaking a particular protocol (e.g. Stomp::Client for Stomp message
 # brokers, Memcached for Starling and Sparrow, etc.) register themselves with this module.
 #

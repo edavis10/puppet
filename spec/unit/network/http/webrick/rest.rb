@@ -22,7 +22,7 @@ describe Puppet::Network::HTTP::WEBrickREST do
             @response    = stub('webrick http response', :status= => true, :body= => true)
             @model_class = stub('indirected model class')
             @webrick     = stub('webrick http server', :mount => true, :[] => {})
-            Puppet::Indirector::Indirection.stubs(:model).with(:foo).returns(@model_class)
+            Puppet::RouteManager::Router.stubs(:model).with(:foo).returns(@model_class)
             @handler = Puppet::Network::HTTP::WEBrickREST.new(@webrick, :foo)
         end
 

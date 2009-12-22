@@ -1,4 +1,4 @@
-require 'puppet/indirector/facts/facter'
+require 'puppet/route_manager/facts/facter'
 
 require 'puppet/configurer/downloader'
 

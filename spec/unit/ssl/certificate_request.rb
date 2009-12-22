@@ -10,12 +10,12 @@ describe Puppet::SSL::CertificateRequest do
         @class = Puppet::SSL::CertificateRequest
     end
 
-    it "should be extended with the Indirector module" do
-        @class.metaclass.should be_include(Puppet::Indirector)
+    it "should be extended with the RouteManager module" do
+        @class.metaclass.should be_include(Puppet::RouteManager)
     end
 
     it "should indirect certificate_request" do
-        @class.indirection.name.should == :certificate_request
+        @class.router.name.should == :certificate_request
     end
 
     it "should use any provided name as its name" do
@@ -177,7 +177,7 @@ describe Puppet::SSL::CertificateRequest do
     describe "when a CSR is saved" do
         it "should allow arguments" do
             csr = Puppet::SSL::CertificateRequest.new("me")
-            csr.class.indirection.stubs(:save)
+            csr.class.router.stubs(:save)
 
             lambda { csr.save :ipaddress => "foo" }.should_not raise_error
         end
@@ -188,7 +188,7 @@ describe Puppet::SSL::CertificateRequest do
                 Puppet::SSL::CertificateAuthority.expects(:instance).returns ca
 
                 csr = Puppet::SSL::CertificateRequest.new("me")
-                Puppet::SSL::CertificateRequest.indirection.expects(:save).with(csr)
+                Puppet::SSL::CertificateRequest.router.expects(:save).with(csr)
 
                 csr.save
             end
@@ -199,7 +199,7 @@ describe Puppet::SSL::CertificateRequest do
                 Puppet::SSL::CertificateAuthority.expects(:instance).returns nil
 
                 csr = Puppet::SSL::CertificateRequest.new("me")
-                Puppet::SSL::CertificateRequest.indirection.expects(:save).with(csr)
+                Puppet::SSL::CertificateRequest.router.expects(:save).with(csr)
 
                 csr.save
             end

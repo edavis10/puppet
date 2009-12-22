@@ -83,7 +83,7 @@ module Puppet
         end
 
         def build_uri(request)
-            "/#{request.indirection_name}/#{request.key}"
+            "/#{request.router_name}/#{request.key}"
         end
     end
 end

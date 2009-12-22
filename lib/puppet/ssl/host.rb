@@ -42,7 +42,7 @@ class Puppet::SSL::Host
     end
 
     # Configure how our various classes interact with their various terminuses.
-    def self.configure_indirection(terminus, cache = nil)
+    def self.configure_router(terminus, cache = nil)
         Certificate.terminus_class = terminus
         CertificateRequest.terminus_class = terminus
         CertificateRevocationList.terminus_class = terminus
@@ -89,7 +89,7 @@ class Puppet::SSL::Host
 
         @ca_location = mode
 
-        configure_indirection(*CA_MODES[@ca_location])
+        configure_router(*CA_MODES[@ca_location])
     end
 
     # Remove all traces of a given host
@@ -105,7 +105,7 @@ class Puppet::SSL::Host
     # Search for more than one host, optionally only specifying
     # an interest in hosts with a given file type.
     # This just allows our non-indirected class to have one of
-    # indirection methods.
+    # router methods.
     def self.search(options = {})
         classes = [Key, CertificateRequest, Certificate]
         if klass = options[:for]
