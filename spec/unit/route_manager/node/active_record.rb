@@ -10,7 +10,7 @@ describe "Puppet::Node::ActiveRecord" do
         require 'puppet/route_manager/node/active_record'
     end
 
-    it "should be a subclass of the ActiveRecord terminus class" do
+    it "should be a subclass of the ActiveRecord repository class" do
         Puppet::Node::ActiveRecord.ancestors.should be_include(Puppet::RouteManager::ActiveRecord)
     end
 

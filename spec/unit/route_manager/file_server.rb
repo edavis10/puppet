@@ -11,9 +11,9 @@ require 'puppet/file_serving/configuration'
 describe Puppet::RouteManager::FileServer do
 
     before :each do
-        Puppet::RouteManager::Terminus.stubs(:register_terminus_class)
+        Puppet::RouteManager::Repository.stubs(:register_repository_class)
         @model = mock 'model'
-        @router = stub 'router', :name => :mystuff, :register_terminus_type => nil, :model => @model
+        @router = stub 'router', :name => :mystuff, :register_repository_type => nil, :model => @model
         Puppet::RouteManager::Router.stubs(:instance).returns(@router)
 
         @file_server_class = Class.new(Puppet::RouteManager::FileServer) do

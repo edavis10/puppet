@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + '/../../../spec_helper'
 require 'puppet/route_manager/checksum/file'
 
 describe Puppet::Checksum::File do
-    it "should be a subclass of the File terminus class" do
+    it "should be a subclass of the File repository class" do
         Puppet::Checksum::File.superclass.should equal(Puppet::RouteManager::File)
     end
 

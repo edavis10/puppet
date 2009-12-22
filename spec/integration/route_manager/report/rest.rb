@@ -6,7 +6,7 @@ require 'puppet/transaction/report'
 require 'puppet/network/server'
 require 'puppet/network/http/webrick/rest'
 
-describe "Report REST Terminus" do
+describe "Report REST Repository" do
     before do
         Puppet[:masterport] = 34343
         Puppet[:server] = "localhost"
@@ -40,8 +40,8 @@ describe "Report REST Terminus" do
         @server.listen
 
         # Let's use REST for our reports :-)
-        @old_terminus = Puppet::Transaction::Report.router.terminus_class
-        Puppet::Transaction::Report.terminus_class = :rest
+        @old_repository = Puppet::Transaction::Report.router.repository_class
+        Puppet::Transaction::Report.repository_class = :rest
 
         # LAK:NOTE We need to have a fake model here so that our indirected methods get
         # passed through REST; otherwise we'd be stubbing 'save', which would cause an immediate
@@ -58,7 +58,7 @@ describe "Report REST Terminus" do
         Puppet::SSL::Host.ca_location = :none
         Puppet.settings.clear
         @server.unlisten
-        Puppet::Transaction::Report.terminus_class = @old_terminus
+        Puppet::Transaction::Report.repository_class = @old_repository
     end
 
     it "should be able to send a report to the server" do

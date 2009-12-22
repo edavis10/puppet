@@ -9,7 +9,7 @@ class Puppet::Node::Exec < Puppet::RouteManager::Exec
     def command
         command = Puppet[:external_nodes]
         unless command != "none"
-            raise ArgumentError, "You must set the 'external_nodes' parameter to use the external node terminus"
+            raise ArgumentError, "You must set the 'external_nodes' parameter to use the external node repository"
         end
         command.split
     end

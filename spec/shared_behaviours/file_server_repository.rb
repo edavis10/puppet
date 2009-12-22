@@ -3,7 +3,7 @@
 #  Created by Luke Kanies on 2007-10-18.
 #  Copyright (c) 2007. All rights reserved.
 
-describe "Puppet::RouteManager::FileServerTerminus", :shared => true do
+describe "Puppet::RouteManager::FileServerRepository", :shared => true do
     # This only works if the shared behaviour is included before
     # the 'before' block in the including context.
     before do
@@ -28,18 +28,18 @@ describe "Puppet::RouteManager::FileServerTerminus", :shared => true do
 
         Puppet::FileServing::Configuration::Parser.stubs(:new).returns(@parser)
 
-        # Stub out the modules terminus
-        @modules = mock 'modules terminus'
+        # Stub out the modules repository
+        @modules = mock 'modules repository'
 
         @request = Puppet::RouteManager::Request.new(:router, :method, "puppet://myhost/one/myfile")
     end
 
     it "should use the file server configuration to find files" do
         @modules.stubs(:find).returns(nil)
-        @terminus.router.stubs(:terminus).with(:modules).returns(@modules)
+        @repository.router.stubs(:repository).with(:modules).returns(@modules)
 
         path = File.join(@path, "myfile")
 
-        @terminus.find(@request).should be_instance_of(@test_class)
+        @repository.find(@request).should be_instance_of(@test_class)
     end
 end

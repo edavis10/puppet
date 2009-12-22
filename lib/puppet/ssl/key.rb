@@ -6,7 +6,7 @@ class Puppet::SSL::Key < Puppet::SSL::Base
     wraps OpenSSL::PKey::RSA
 
     extend Puppet::RouteManager
-    indirects :key, :terminus_class => :file
+    indirects :key, :repository_class => :file
 
     # Because of how the format handler class is included, this
     # can't be in the base class.

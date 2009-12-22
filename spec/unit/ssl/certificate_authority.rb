@@ -352,7 +352,7 @@ describe Puppet::SSL::CertificateAuthority do
                 @ca.sign(@name)
             end
 
-            it "should use look up a CSR for the host in the :ca_file terminus" do
+            it "should use look up a CSR for the host in the :ca_file repository" do
                 Puppet::SSL::CertificateRequest.expects(:find).with(@name).returns @request
 
                 @ca.sign(@name)

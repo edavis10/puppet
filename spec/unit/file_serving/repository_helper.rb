@@ -5,12 +5,12 @@
 
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-require 'puppet/file_serving/terminus_helper'
+require 'puppet/file_serving/repository_helper'
 
-describe Puppet::FileServing::TerminusHelper do
+describe Puppet::FileServing::RepositoryHelper do
     before do
         @helper = Object.new
-        @helper.extend(Puppet::FileServing::TerminusHelper)
+        @helper.extend(Puppet::FileServing::RepositoryHelper)
 
         @model = mock 'model'
         @helper.stubs(:model).returns(@model)

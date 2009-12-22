@@ -6,7 +6,7 @@ require 'puppet/route_manager/node/ldap'
 
 describe Puppet::Node::Ldap do
     before do
-        Puppet::Node::Facts.stubs(:terminus_class).returns :yaml
+        Puppet::Node::Facts.stubs(:repository_class).returns :yaml
     end
 
     describe "when searching for a single node" do
@@ -311,7 +311,7 @@ describe Puppet::Node::Ldap do
             @options = {}
             @request = stub 'request', :key => "foo", :options => @options
 
-            Puppet::Node::Facts.stubs(:terminus_class).returns :yaml
+            Puppet::Node::Facts.stubs(:repository_class).returns :yaml
         end
 
         it "should find all nodes if no arguments are provided" do

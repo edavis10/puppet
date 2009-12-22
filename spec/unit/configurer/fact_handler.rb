@@ -142,7 +142,7 @@ describe Puppet::Configurer::FactHandler do
             @facthandler.reload_facter
         end
 
-        it "should use the Facter terminus load all Puppet Fact plugins" do
+        it "should use the Facter repository load all Puppet Fact plugins" do
             Puppet::Node::Facts::Facter.expects(:load_fact_plugins)
             @facthandler.reload_facter
         end

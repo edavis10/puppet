@@ -22,22 +22,22 @@ describe Puppet::Resource::Catalog do
         end
 
 
-        it "should be able to delegate to the :yaml terminus" do
-            Puppet::Resource::Catalog.router.stubs(:terminus_class).returns :yaml
+        it "should be able to delegate to the :yaml repository" do
+            Puppet::Resource::Catalog.router.stubs(:repository_class).returns :yaml
 
             # Load now, before we stub the exists? method.
-            terminus = Puppet::Resource::Catalog.router.terminus(:yaml)
-            terminus.expects(:path).with("me").returns "/my/yaml/file"
+            repository = Puppet::Resource::Catalog.router.repository(:yaml)
+            repository.expects(:path).with("me").returns "/my/yaml/file"
 
             FileTest.expects(:exist?).with("/my/yaml/file").returns false
             Puppet::Resource::Catalog.find("me").should be_nil
         end
 
-        it "should be able to delegate to the :compiler terminus" do
-            Puppet::Resource::Catalog.router.stubs(:terminus_class).returns :compiler
+        it "should be able to delegate to the :compiler repository" do
+            Puppet::Resource::Catalog.router.stubs(:repository_class).returns :compiler
 
             # Load now, before we stub the exists? method.
-            compiler = Puppet::Resource::Catalog.router.terminus(:compiler)
+            compiler = Puppet::Resource::Catalog.router.repository(:compiler)
 
             node = mock 'node'
             node.stub_everything
@@ -48,13 +48,13 @@ describe Puppet::Resource::Catalog do
             Puppet::Resource::Catalog.find("me").should be_nil
         end
 
-        it "should pass provided node information directly to the terminus" do
-            terminus = mock 'terminus'
+        it "should pass provided node information directly to the repository" do
+            repository = mock 'repository'
 
-            Puppet::Resource::Catalog.router.stubs(:terminus).returns terminus
+            Puppet::Resource::Catalog.router.stubs(:repository).returns repository
 
             node = mock 'node'
-            terminus.expects(:find).with { |request| request.options[:use_node] == node }
+            repository.expects(:find).with { |request| request.options[:use_node] == node }
             Puppet::Resource::Catalog.find("me", :use_node => node)
         end
     end

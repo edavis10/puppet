@@ -10,10 +10,10 @@ describe "Puppet::Resource::Catalog::ActiveRecord" do
         require 'puppet/route_manager/catalog/active_record'
         Puppet.features.stubs(:rails?).returns true
         Puppet::Rails.stubs(:init)
-        @terminus = Puppet::Resource::Catalog::ActiveRecord.new
+        @repository = Puppet::Resource::Catalog::ActiveRecord.new
     end
 
-    it "should be a subclass of the ActiveRecord terminus class" do
+    it "should be a subclass of the ActiveRecord repository class" do
         Puppet::Resource::Catalog::ActiveRecord.ancestors.should be_include(Puppet::RouteManager::ActiveRecord)
     end
 
@@ -32,25 +32,25 @@ describe "Puppet::Resource::Catalog::ActiveRecord" do
         it "should return nil unless ':cache_integration_hack' is set to true" do
             @request.options[:cache_integration_hack] = false
             Puppet::Rails::Host.expects(:find_by_name).never
-            @terminus.find(@request).should be_nil
+            @repository.find(@request).should be_nil
         end
 
         it "should use the Hosts ActiveRecord class to find the host" do
             Puppet::Rails::Host.expects(:find_by_name).with { |key, args| key == "foo" }
-            @terminus.find(@request)
+            @repository.find(@request)
         end
 
         it "should return nil if no host instance can be found" do
             Puppet::Rails::Host.expects(:find_by_name).returns nil
 
-            @terminus.find(@request).should be_nil
+            @repository.find(@request).should be_nil
         end
 
         it "should return a catalog with the same name as the host if the host can be found" do
             host = stub 'host', :name => "foo", :resources => []
             Puppet::Rails::Host.expects(:find_by_name).returns host
 
-            result = @terminus.find(@request)
+            result = @repository.find(@request)
             result.should be_instance_of(Puppet::Resource::Catalog)
             result.name.should == "foo"
         end
@@ -70,7 +70,7 @@ describe "Puppet::Resource::Catalog::ActiveRecord" do
             catalog.expects(:add_resource).with "trans_res1"
             catalog.expects(:add_resource).with "trans_res2"
 
-            @terminus.find(@request)
+            @repository.find(@request)
         end
     end
 
@@ -90,7 +90,7 @@ describe "Puppet::Resource::Catalog::ActiveRecord" do
         it "should find the Rails host with the same name" do
             Puppet::Rails::Host.expects(:find_by_name).with("foo").returns @host
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
 
         it "should create a new Rails host if none can be found" do
@@ -98,14 +98,14 @@ describe "Puppet::Resource::Catalog::ActiveRecord" do
 
             Puppet::Rails::Host.expects(:create).with(:name => "foo").returns @host
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
 
         it "should set the catalog vertices as resources on the Rails host instance" do
             @catalog.expects(:vertices).returns "foo"
             @host.expects(:merge_resources).with("foo")
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
 
         it "should set host ip if we could find a matching node" do
@@ -113,7 +113,7 @@ describe "Puppet::Resource::Catalog::ActiveRecord" do
 
             @host.expects(:ip=).with '192.168.0.1'
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
 
         it "should set host environment if we could find a matching node" do
@@ -121,7 +121,7 @@ describe "Puppet::Resource::Catalog::ActiveRecord" do
 
             @host.expects(:environment=).with 'myenv'
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
 
         it "should set the last compile time on the host" do
@@ -129,13 +129,13 @@ describe "Puppet::Resource::Catalog::ActiveRecord" do
             Time.expects(:now).returns now
             @host.expects(:last_compile=).with now
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
 
         it "should save the Rails host instance" do
             @host.expects(:save)
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
     end
 end

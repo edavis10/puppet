@@ -17,9 +17,9 @@ describe "puppetd" do
         Puppet::Util::Log.stubs(:newdestination)
         Puppet::Util::Log.stubs(:level=)
 
-        Puppet::Node.stubs(:terminus_class=)
+        Puppet::Node.stubs(:repository_class=)
         Puppet::Node.stubs(:cache_class=)
-        Puppet::Node::Facts.stubs(:terminus_class=)
+        Puppet::Node::Facts.stubs(:repository_class=)
     end
 
     it "should ask Puppet::Application to parse Puppet configuration file" do
@@ -176,10 +176,10 @@ describe "puppetd" do
             Puppet.settings.stubs(:print_config?)
             Puppet.settings.stubs(:print_config)
             Puppet::SSL::Host.stubs(:ca_location=)
-            Puppet::Transaction::Report.stubs(:terminus_class=)
-            Puppet::Resource::Catalog.stubs(:terminus_class=)
+            Puppet::Transaction::Report.stubs(:repository_class=)
+            Puppet::Resource::Catalog.stubs(:repository_class=)
             Puppet::Resource::Catalog.stubs(:cache_class=)
-            Puppet::Node::Facts.stubs(:terminus_class=)
+            Puppet::Node::Facts.stubs(:repository_class=)
             @host = stub_everything 'host'
             Puppet::SSL::Host.stubs(:new).returns(@host)
             Puppet.stubs(:settraps)
@@ -299,13 +299,13 @@ describe "puppetd" do
         end
 
         it "should tell the report handler to use REST" do
-            Puppet::Transaction::Report.expects(:terminus_class=).with(:rest)
+            Puppet::Transaction::Report.expects(:repository_class=).with(:rest)
 
             @puppetd.run_setup
         end
 
         it "should tell the catalog handler to use REST" do
-            Puppet::Resource::Catalog.expects(:terminus_class=).with(:rest)
+            Puppet::Resource::Catalog.expects(:repository_class=).with(:rest)
 
             @puppetd.run_setup
         end
@@ -317,7 +317,7 @@ describe "puppetd" do
         end
 
         it "should tell the facts to use facter" do
-            Puppet::Node::Facts.expects(:terminus_class=).with(:facter)
+            Puppet::Node::Facts.expects(:repository_class=).with(:facter)
 
             @puppetd.run_setup
         end

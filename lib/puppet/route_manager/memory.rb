@@ -1,7 +1,7 @@
-require 'puppet/route_manager/terminus'
+require 'puppet/route_manager/repository'
 
 # Manage a memory-cached list of instances.
-class Puppet::RouteManager::Memory < Puppet::RouteManager::Terminus
+class Puppet::RouteManager::Memory < Puppet::RouteManager::Repository
     def initialize
         @instances = {}
     end

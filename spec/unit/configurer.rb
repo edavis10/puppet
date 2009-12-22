@@ -116,7 +116,7 @@ describe Puppet::Configurer, "when retrieving a catalog" do
 
     it "should log and return the cached catalog when no catalog can be retrieved from the server" do
         Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_cache] == true }.returns nil
-        Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_terminus] == true }.returns @catalog
+        Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_repository] == true }.returns @catalog
 
         Puppet.expects(:notice)
 
@@ -125,14 +125,14 @@ describe Puppet::Configurer, "when retrieving a catalog" do
 
     it "should not look in the cache for a catalog if one is returned from the server" do
         Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_cache] == true }.returns @catalog
-        Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_terminus] == true }.never
+        Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_repository] == true }.never
 
         @agent.retrieve_catalog.should == @catalog
     end
 
     it "should return the cached catalog when retrieving the remote catalog throws an exception" do
         Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_cache] == true }.raises "eh"
-        Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_terminus] == true }.returns @catalog
+        Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_repository] == true }.returns @catalog
 
         @agent.retrieve_catalog.should == @catalog
     end
@@ -149,7 +149,7 @@ describe Puppet::Configurer, "when retrieving a catalog" do
 
     it "should return nil if no cached catalog is available and no catalog can be retrieved from the server" do
         Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_cache] == true }.returns nil
-        Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_terminus] == true }.returns nil
+        Puppet::Resource::Catalog.expects(:find).with { |name, options| options[:ignore_repository] == true }.returns nil
 
         @agent.retrieve_catalog.should be_nil
     end

@@ -9,7 +9,7 @@ describe "Puppet::Resource::Catalog::Queue" do
     confine "Missing pson support; cannot test queue" => Puppet.features.pson?
 
     before do
-        Puppet::Resource::Catalog.router.terminus(:queue)
+        Puppet::Resource::Catalog.router.repository(:queue)
         @catalog = Puppet::Resource::Catalog.new
 
         @one = Puppet::Resource.new(:file, "/one")
@@ -24,16 +24,16 @@ describe "Puppet::Resource::Catalog::Queue" do
     after { Puppet.settings.clear }
 
     it "should render catalogs to pson and send them via the queue client when catalogs are saved" do
-        terminus = Puppet::Resource::Catalog.router.terminus(:queue)
+        repository = Puppet::Resource::Catalog.router.repository(:queue)
 
         client = mock 'client'
-        terminus.stubs(:client).returns client
+        repository.stubs(:client).returns client
 
         client.expects(:send_message).with(:catalog, @catalog.to_pson)
 
         request = Puppet::RouteManager::Request.new(:catalog, :save, "foo", :instance => @catalog)
 
-        terminus.save(request)
+        repository.save(request)
     end
 
     it "should intern catalog messages when they are passed via a subscription" do

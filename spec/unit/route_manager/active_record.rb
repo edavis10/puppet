@@ -8,9 +8,9 @@ describe Puppet::RouteManager::ActiveRecord do
     before do
         Puppet::Rails.stubs(:init)
 
-        Puppet::RouteManager::Terminus.stubs(:register_terminus_class)
+        Puppet::RouteManager::Repository.stubs(:register_repository_class)
         @model = mock 'model'
-        @router = stub 'router', :name => :mystuff, :register_terminus_type => nil, :model => @model
+        @router = stub 'router', :name => :mystuff, :register_repository_type => nil, :model => @model
         Puppet::RouteManager::Router.stubs(:instance).returns(@router)
 
         @active_record_class = Class.new(Puppet::RouteManager::ActiveRecord) do
@@ -22,7 +22,7 @@ describe Puppet::RouteManager::ActiveRecord do
         @ar_model = mock 'ar_model'
 
         @active_record_class.use_ar_model @ar_model
-        @terminus = @active_record_class.new
+        @repository = @active_record_class.new
 
         @name = "me"
         @instance = stub 'instance', :name => @name
@@ -46,12 +46,12 @@ describe Puppet::RouteManager::ActiveRecord do
         it "should use the ActiveRecord model to find the instance" do
             @ar_model.expects(:find_by_name).with(@name)
 
-            @terminus.find(@request)
+            @repository.find(@request)
         end
 
         it "should return nil if no instance is found" do
             @ar_model.expects(:find_by_name).with(@name).returns nil
-            @terminus.find(@request).should be_nil
+            @repository.find(@request).should be_nil
         end
 
         it "should convert the instance to a Puppet object if it is found" do
@@ -59,7 +59,7 @@ describe Puppet::RouteManager::ActiveRecord do
             instance.expects(:to_puppet).returns "mypuppet"
 
             @ar_model.expects(:find_by_name).with(@name).returns instance
-            @terminus.find(@request).should == "mypuppet"
+            @repository.find(@request).should == "mypuppet"
         end
     end
 
@@ -70,7 +70,7 @@ describe Puppet::RouteManager::ActiveRecord do
 
             rails_object.expects(:save)
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
     end
 end

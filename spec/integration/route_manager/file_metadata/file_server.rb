@@ -6,13 +6,13 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 
 require 'puppet/route_manager/file_metadata/file_server'
-require 'shared_behaviours/file_server_terminus'
+require 'shared_behaviours/file_server_repository'
 
 describe Puppet::RouteManager::FileMetadata::FileServer, " when finding files" do
-    it_should_behave_like "Puppet::RouteManager::FileServerTerminus"
+    it_should_behave_like "Puppet::RouteManager::FileServerRepository"
 
     before do
-        @terminus = Puppet::RouteManager::FileMetadata::FileServer.new
+        @repository = Puppet::RouteManager::FileMetadata::FileServer.new
         @test_class = Puppet::FileServing::Metadata
     end
 end

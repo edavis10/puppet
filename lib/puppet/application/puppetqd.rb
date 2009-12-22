@@ -46,7 +46,7 @@ Puppet::Application.new(:puppetqd) do
         Puppet::Resource::Catalog::Queue.subscribe do |catalog|
             # Once you have a Puppet::Resource::Catalog instance, calling save() on it should suffice
             # to put it through to the database via its active_record route_manager (which is determined
-            # by the terminus_class = :active_record setting above)
+            # by the repository_class = :active_record setting above)
             benchmark(:notice, "Processing queued catalog for %s" % catalog.name) do
                 begin
                     catalog.save
@@ -83,7 +83,7 @@ Puppet::Application.new(:puppetqd) do
             exit(Puppet.settings.print_configs ? 0 : 1)
         end
 
-        Puppet::Resource::Catalog.terminus_class = :active_record
+        Puppet::Resource::Catalog.repository_class = :active_record
 
         daemon.daemonize if Puppet[:daemonize]
 

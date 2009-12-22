@@ -6,13 +6,13 @@ require 'puppet/route_manager'
 # Router call, and as a a result also handles REST calls.  It's somewhat
 # analogous to an HTTP Request object, except tuned for our RouteManager.
 class Puppet::RouteManager::Request
-    attr_accessor :key, :method, :options, :instance, :node, :ip, :authenticated, :ignore_cache, :ignore_terminus
+    attr_accessor :key, :method, :options, :instance, :node, :ip, :authenticated, :ignore_cache, :ignore_repository
 
     attr_accessor :server, :port, :uri, :protocol
 
     attr_reader :router_name
 
-    OPTION_ATTRIBUTES = [:ip, :node, :authenticated, :ignore_terminus, :ignore_cache, :instance, :environment]
+    OPTION_ATTRIBUTES = [:ip, :node, :authenticated, :ignore_repository, :ignore_cache, :instance, :environment]
 
     # Is this an authenticated request?
     def authenticated?
@@ -48,8 +48,8 @@ class Puppet::RouteManager::Request
         ignore_cache
     end
 
-    def ignore_terminus?
-        ignore_terminus
+    def ignore_repository?
+        ignore_repository
     end
 
     def initialize(router_name, method, key, options = {})

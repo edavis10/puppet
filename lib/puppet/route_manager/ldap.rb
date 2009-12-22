@@ -1,7 +1,7 @@
-require 'puppet/route_manager/terminus'
+require 'puppet/route_manager/repository'
 require 'puppet/util/ldap/connection'
 
-class Puppet::RouteManager::Ldap < Puppet::RouteManager::Terminus
+class Puppet::RouteManager::Ldap < Puppet::RouteManager::Repository
     # Perform our ldap search and process the result.
     def find(request)
         return ldapsearch(search_filter(request.key)) { |entry| return process(entry) } || nil
@@ -10,7 +10,7 @@ class Puppet::RouteManager::Ldap < Puppet::RouteManager::Terminus
     # Process the found entry.  We assume that we don't just want the
     # ldap object.
     def process(entry)
-        raise Puppet::DevError, "The 'process' method has not been overridden for the LDAP terminus for %s" % self.name
+        raise Puppet::DevError, "The 'process' method has not been overridden for the LDAP repository for %s" % self.name
     end
 
     # Default to all attributes.
@@ -24,7 +24,7 @@ class Puppet::RouteManager::Ldap < Puppet::RouteManager::Terminus
 
     # The ldap search filter to use.
     def search_filter(name)
-        raise Puppet::DevError, "No search string set for LDAP terminus for %s" % self.name
+        raise Puppet::DevError, "No search string set for LDAP repository for %s" % self.name
     end
 
     # Find the ldap node, return the class list and parent node specially,

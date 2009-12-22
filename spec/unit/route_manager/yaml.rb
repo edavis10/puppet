@@ -6,7 +6,7 @@ require 'puppet/route_manager/yaml'
 
 describe Puppet::RouteManager::Yaml, " when choosing file location" do
     before :each do
-        @router = stub 'router', :name => :my_yaml, :register_terminus_type => nil
+        @router = stub 'router', :name => :my_yaml, :register_repository_type => nil
         Puppet::RouteManager::Router.stubs(:instance).with(:my_yaml).returns(@router)
         @store_class = Class.new(Puppet::RouteManager::Yaml) do
             def self.to_s
@@ -43,7 +43,7 @@ describe Puppet::RouteManager::Yaml, " when choosing file location" do
             @store.path(:me).should =~ %r{^#{@dir}}
         end
 
-        it "should use the terminus name for choosing the subdirectory" do
+        it "should use the repository name for choosing the subdirectory" do
             @store.path(:me).should =~ %r{^#{@dir}/my_yaml}
         end
 

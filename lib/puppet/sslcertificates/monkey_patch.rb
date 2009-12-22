@@ -3,4 +3,4 @@
 require 'puppet/route_manager'
 
 OpenSSL::PKey::RSA.extend Puppet::RouteManager
-OpenSSL::PKey::RSA.indirects :ssl_rsa, :terminus_class => :file
+OpenSSL::PKey::RSA.indirects :ssl_rsa, :repository_class => :file

@@ -22,7 +22,7 @@ describe Puppet::SSL::Certificate::Rest do
     end
 
     it "should make sure found certificates have their names set to the search string" do
-        terminus = Puppet::SSL::Certificate::Rest.new
+        repository = Puppet::SSL::Certificate::Rest.new
 
         # This has 'boo.com' in the CN
         cert_string = "-----BEGIN CERTIFICATE-----
@@ -43,14 +43,14 @@ rn/G
 "
 
         network = stub 'network'
-        terminus.stubs(:network).returns network
+        repository.stubs(:network).returns network
 
         response = stub 'response', :code => "200", :body => cert_string
         response.stubs(:[]).with('content-type').returns "text/plain"
         network.expects(:get).returns response
 
         request = Puppet::RouteManager::Request.new(:certificate, :find, "foo.com")
-        result = terminus.find(request)
+        result = repository.find(request)
         result.should_not be_nil
         result.name.should == "foo.com"
     end

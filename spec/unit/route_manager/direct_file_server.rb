@@ -9,9 +9,9 @@ require 'puppet/route_manager/direct_file_server'
 
 describe Puppet::RouteManager::DirectFileServer do
     before :each do
-        Puppet::RouteManager::Terminus.stubs(:register_terminus_class)
+        Puppet::RouteManager::Repository.stubs(:register_repository_class)
         @model = mock 'model'
-        @router = stub 'router', :name => :mystuff, :register_terminus_type => nil, :model => @model
+        @router = stub 'router', :name => :mystuff, :register_repository_type => nil, :model => @model
         Puppet::RouteManager::Router.stubs(:instance).returns(@router)
 
         @direct_file_class = Class.new(Puppet::RouteManager::DirectFileServer) do
@@ -69,7 +69,7 @@ describe Puppet::RouteManager::DirectFileServer do
             @server.find(@request).should be_nil
         end
 
-        it "should use :path2instances from the terminus_helper to return instances if the file exists" do
+        it "should use :path2instances from the repository_helper to return instances if the file exists" do
             FileTest.expects(:exists?).with("/my/local").returns true
             @server.expects(:path2instances)
             @server.search(@request)

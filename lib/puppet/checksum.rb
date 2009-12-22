@@ -46,7 +46,7 @@ class Puppet::Checksum
         self.algorithm = algorithm
     end
 
-    # This is here so the RouteManager::File terminus works correctly.
+    # This is here so the RouteManager::File repository works correctly.
     def name
         checksum
     end

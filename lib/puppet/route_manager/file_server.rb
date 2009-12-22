@@ -4,12 +4,12 @@
 
 require 'puppet/file_serving/configuration'
 require 'puppet/file_serving/fileset'
-require 'puppet/file_serving/terminus_helper'
-require 'puppet/route_manager/terminus'
+require 'puppet/file_serving/repository_helper'
+require 'puppet/route_manager/repository'
 
 # Look files up using the file server.
-class Puppet::RouteManager::FileServer < Puppet::RouteManager::Terminus
-    include Puppet::FileServing::TerminusHelper
+class Puppet::RouteManager::FileServer < Puppet::RouteManager::Repository
+    include Puppet::FileServing::RepositoryHelper
 
     # Is the client authorized to perform this action?
     def authorized?(request)

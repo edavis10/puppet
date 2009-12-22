@@ -124,8 +124,8 @@ describe Puppet::Node, "when indirecting" do
         Puppet::Node.find(:my_node.to_s)
     end
 
-    it "should default to the 'plain' node terminus" do
-        Puppet::Node.router.terminus_class.should == :plain
+    it "should default to the 'plain' node repository" do
+        Puppet::Node.router.repository_class.should == :plain
     end
 
     it "should not have a cache class defined" do

@@ -1,8 +1,8 @@
-require 'puppet/route_manager/terminus'
+require 'puppet/route_manager/repository'
 require 'puppet/util/file_locking'
 
 # The base class for YAML router termini.
-class Puppet::RouteManager::Yaml < Puppet::RouteManager::Terminus
+class Puppet::RouteManager::Yaml < Puppet::RouteManager::Repository
     include Puppet::Util::FileLocking
 
     # Read a given name's file in and convert it from YAML.

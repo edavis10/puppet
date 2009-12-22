@@ -12,16 +12,16 @@ describe Puppet::Transaction::Report do
             Puppet.settings.stubs(:use)
         end
 
-        it "should be able to delegate to the :processor terminus" do
-            Puppet::Transaction::Report.router.stubs(:terminus_class).returns :processor
+        it "should be able to delegate to the :processor repository" do
+            Puppet::Transaction::Report.router.stubs(:repository_class).returns :processor
 
-            terminus = Puppet::Transaction::Report.router.terminus(:processor)
+            repository = Puppet::Transaction::Report.router.repository(:processor)
 
             Facter.stubs(:value).returns "host.domain.com"
 
             report = Puppet::Transaction::Report.new
 
-            terminus.expects(:process).with(report)
+            repository.expects(:process).with(report)
 
             report.save
         end

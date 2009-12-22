@@ -31,7 +31,7 @@ describe Puppet::SSL::CertificateRequest do
         system("rm -rf %s" % @dir)
         Puppet.settings.clear
 
-        # This is necessary so the terminus instances don't lie around.
+        # This is necessary so the repository instances don't lie around.
         Puppet::Util::Cacher.expire
     end
 

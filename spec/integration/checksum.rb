@@ -7,14 +7,14 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 require 'puppet/checksum'
 
-describe Puppet::Checksum, " when using the file terminus" do
+describe Puppet::Checksum, " when using the file repository" do
     before do
         Puppet.settings.stubs(:use)
-        Puppet::Checksum.terminus_class = :file
+        Puppet::Checksum.repository_class = :file
         @content = "this is some content"
         @sum = Puppet::Checksum.new(@content)
 
-        @file = Puppet::Checksum.router.terminus.path(@sum.checksum)
+        @file = Puppet::Checksum.router.repository.path(@sum.checksum)
     end
 
     it "should store content at a path determined by its checksum" do

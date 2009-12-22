@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + '/../../../spec_helper'
 require 'puppet/route_manager/catalog/queue'
 
 describe Puppet::Resource::Catalog::Queue do
-    it 'should be a subclass of the Queue terminus' do
+    it 'should be a subclass of the Queue repository' do
         Puppet::Resource::Catalog::Queue.superclass.should equal(Puppet::RouteManager::Queue)
     end
 

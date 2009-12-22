@@ -6,7 +6,7 @@ require 'puppet/resource/catalog'
 require 'puppet/route_manager/catalog/yaml'
 
 describe Puppet::Resource::Catalog::Yaml do
-    it "should be a subclass of the Yaml terminus" do
+    it "should be a subclass of the Yaml repository" do
         Puppet::Resource::Catalog::Yaml.superclass.should equal(Puppet::RouteManager::Yaml)
     end
 

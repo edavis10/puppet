@@ -12,7 +12,7 @@ describe "puppetqd" do
         Puppet::Util::Log.stubs(:newdestination)
         Puppet::Util::Log.stubs(:level=)
 
-        Puppet::Resource::Catalog.stubs(:terminus_class=)
+        Puppet::Resource::Catalog.stubs(:repository_class=)
     end
 
     it "should ask Puppet::Application to parse Puppet configuration file" do
@@ -79,7 +79,7 @@ describe "puppetqd" do
             @puppetqd.daemon.stubs(:daemonize)
             Puppet.stubs(:info)
             Puppet.features.stubs(:stomp?).returns true
-            Puppet::Resource::Catalog.stubs(:terminus_class=)
+            Puppet::Resource::Catalog.stubs(:repository_class=)
             Puppet.stubs(:settraps)
             Puppet.settings.stubs(:print_config?)
             Puppet.settings.stubs(:print_config)
@@ -143,7 +143,7 @@ describe "puppetqd" do
         end
 
         it "should configure the Catalog class to use ActiveRecord" do
-            Puppet::Resource::Catalog.expects(:terminus_class=).with(:active_record)
+            Puppet::Resource::Catalog.expects(:repository_class=).with(:active_record)
 
             @puppetqd.run_setup
         end

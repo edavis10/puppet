@@ -17,8 +17,8 @@ describe Puppet::SSL::Key do
         @class.router.name.should == :key
     end
 
-    it "should default to the :file terminus" do
-        @class.router.terminus_class.should == :file
+    it "should default to the :file repository" do
+        @class.router.repository_class.should == :file
     end
 
     it "should only support the text format" do

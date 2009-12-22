@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + '/../../../spec_helper'
 require 'puppet/route_manager/facts/facter'
 
 describe Puppet::Node::Facts::Facter do
-    it "should be a subclass of the Code terminus" do
+    it "should be a subclass of the Code repository" do
         Puppet::Node::Facts::Facter.superclass.should equal(Puppet::RouteManager::Code)
     end
 

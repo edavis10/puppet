@@ -49,7 +49,7 @@ describe Puppet::RouteManager, "when registering an router" do
     end
 
     it "should pass any provided options to the router during initialization" do
-        klass = mock 'terminus class'
+        klass = mock 'repository class'
         Puppet::RouteManager::Router.expects(:new).with(@thingie, :first, {:some => :options})
         @router = @thingie.indirects :first, :some => :options
     end
@@ -141,9 +141,9 @@ describe Puppet::RouteManager, "when redirecting a model" do
         end
     end
 
-    it "should give the model the ability to set the router terminus class" do
-        @router.expects(:terminus_class=).with(:myterm)
-        @thingie.terminus_class = :myterm
+    it "should give the model the ability to set the router repository class" do
+        @router.expects(:repository_class=).with(:myterm)
+        @thingie.repository_class = :myterm
     end
 
     it "should give the model the ability to set the router cache class" do

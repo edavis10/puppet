@@ -149,12 +149,12 @@ describe Puppet::RouteManager::Request do
             Puppet::RouteManager::Request.new(:ind, :method, :key).should_not be_ignore_cache
         end
 
-        it "should allow indication that it should not not read an instance from the terminus" do
-            Puppet::RouteManager::Request.new(:ind, :method, :key, :ignore_terminus => true).should be_ignore_terminus
+        it "should allow indication that it should not not read an instance from the repository" do
+            Puppet::RouteManager::Request.new(:ind, :method, :key, :ignore_repository => true).should be_ignore_repository
         end
 
-        it "should default to not ignoring the terminus" do
-            Puppet::RouteManager::Request.new(:ind, :method, :key).should_not be_ignore_terminus
+        it "should default to not ignoring the repository" do
+            Puppet::RouteManager::Request.new(:ind, :method, :key).should_not be_ignore_repository
         end
     end
 

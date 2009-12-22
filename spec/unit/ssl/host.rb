@@ -142,7 +142,7 @@ describe Puppet::SSL::Host do
     describe "when specifying the CA location" do
         before do
             [Puppet::SSL::Key, Puppet::SSL::Certificate, Puppet::SSL::CertificateRequest, Puppet::SSL::CertificateRevocationList].each do |klass|
-                klass.stubs(:terminus_class=)
+                klass.stubs(:repository_class=)
                 klass.stubs(:cache_class=)
             end
         end
@@ -176,16 +176,16 @@ describe Puppet::SSL::Host do
                 Puppet::SSL::Host.ca_location = :local
             end
 
-            it "should set the terminus class for Key as :file" do
-                Puppet::SSL::Key.expects(:terminus_class=).with :file
+            it "should set the repository class for Key as :file" do
+                Puppet::SSL::Key.expects(:repository_class=).with :file
 
                 Puppet::SSL::Host.ca_location = :local
             end
 
-            it "should set the terminus class for Certificate, CertificateRevocationList, and CertificateRequest as :ca" do
-                Puppet::SSL::Certificate.expects(:terminus_class=).with :ca
-                Puppet::SSL::CertificateRequest.expects(:terminus_class=).with :ca
-                Puppet::SSL::CertificateRevocationList.expects(:terminus_class=).with :ca
+            it "should set the repository class for Certificate, CertificateRevocationList, and CertificateRequest as :ca" do
+                Puppet::SSL::Certificate.expects(:repository_class=).with :ca
+                Puppet::SSL::CertificateRequest.expects(:repository_class=).with :ca
+                Puppet::SSL::CertificateRevocationList.expects(:repository_class=).with :ca
 
                 Puppet::SSL::Host.ca_location = :local
             end
@@ -200,27 +200,27 @@ describe Puppet::SSL::Host do
                 Puppet::SSL::Host.ca_location = :remote
             end
 
-            it "should set the terminus class for Key as :file" do
-                Puppet::SSL::Key.expects(:terminus_class=).with :file
+            it "should set the repository class for Key as :file" do
+                Puppet::SSL::Key.expects(:repository_class=).with :file
 
                 Puppet::SSL::Host.ca_location = :remote
             end
 
-            it "should set the terminus class for Certificate, CertificateRevocationList, and CertificateRequest as :rest" do
-                Puppet::SSL::Certificate.expects(:terminus_class=).with :rest
-                Puppet::SSL::CertificateRequest.expects(:terminus_class=).with :rest
-                Puppet::SSL::CertificateRevocationList.expects(:terminus_class=).with :rest
+            it "should set the repository class for Certificate, CertificateRevocationList, and CertificateRequest as :rest" do
+                Puppet::SSL::Certificate.expects(:repository_class=).with :rest
+                Puppet::SSL::CertificateRequest.expects(:repository_class=).with :rest
+                Puppet::SSL::CertificateRevocationList.expects(:repository_class=).with :rest
 
                 Puppet::SSL::Host.ca_location = :remote
             end
         end
 
         describe "as 'only'" do
-            it "should set the terminus class for Key, Certificate, CertificateRevocationList, and CertificateRequest as :ca" do
-                Puppet::SSL::Key.expects(:terminus_class=).with :ca
-                Puppet::SSL::Certificate.expects(:terminus_class=).with :ca
-                Puppet::SSL::CertificateRequest.expects(:terminus_class=).with :ca
-                Puppet::SSL::CertificateRevocationList.expects(:terminus_class=).with :ca
+            it "should set the repository class for Key, Certificate, CertificateRevocationList, and CertificateRequest as :ca" do
+                Puppet::SSL::Key.expects(:repository_class=).with :ca
+                Puppet::SSL::Certificate.expects(:repository_class=).with :ca
+                Puppet::SSL::CertificateRequest.expects(:repository_class=).with :ca
+                Puppet::SSL::CertificateRevocationList.expects(:repository_class=).with :ca
 
                 Puppet::SSL::Host.ca_location = :only
             end
@@ -235,11 +235,11 @@ describe Puppet::SSL::Host do
         end
 
         describe "as 'none'" do
-            it "should set the terminus class for Key, Certificate, CertificateRevocationList, and CertificateRequest as :file" do
-                Puppet::SSL::Key.expects(:terminus_class=).with :file
-                Puppet::SSL::Certificate.expects(:terminus_class=).with :file
-                Puppet::SSL::CertificateRequest.expects(:terminus_class=).with :file
-                Puppet::SSL::CertificateRevocationList.expects(:terminus_class=).with :file
+            it "should set the repository class for Key, Certificate, CertificateRevocationList, and CertificateRequest as :file" do
+                Puppet::SSL::Key.expects(:repository_class=).with :file
+                Puppet::SSL::Certificate.expects(:repository_class=).with :file
+                Puppet::SSL::CertificateRequest.expects(:repository_class=).with :file
+                Puppet::SSL::CertificateRevocationList.expects(:repository_class=).with :file
 
                 Puppet::SSL::Host.ca_location = :none
             end

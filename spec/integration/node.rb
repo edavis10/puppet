@@ -14,52 +14,52 @@ describe Puppet::Node do
             @node = Puppet::Node.new(@name)
         end
 
-        it "should be able to use the exec terminus" do
-            Puppet::Node.router.stubs(:terminus_class).returns :exec
+        it "should be able to use the exec repository" do
+            Puppet::Node.router.stubs(:repository_class).returns :exec
 
             # Load now so we can stub
-            terminus = Puppet::Node.router.terminus(:exec)
+            repository = Puppet::Node.router.repository(:exec)
 
-            terminus.expects(:query).with(@name).returns "myresults"
-            terminus.expects(:translate).with(@name, "myresults").returns "translated_results"
-            terminus.expects(:create_node).with(@name, "translated_results").returns @node
+            repository.expects(:query).with(@name).returns "myresults"
+            repository.expects(:translate).with(@name, "myresults").returns "translated_results"
+            repository.expects(:create_node).with(@name, "translated_results").returns @node
 
             Puppet::Node.find(@name).should equal(@node)
         end
 
-        it "should be able to use the yaml terminus" do
-            Puppet::Node.router.stubs(:terminus_class).returns :yaml
+        it "should be able to use the yaml repository" do
+            Puppet::Node.router.stubs(:repository_class).returns :yaml
 
             # Load now, before we stub the exists? method.
-            terminus = Puppet::Node.router.terminus(:yaml)
+            repository = Puppet::Node.router.repository(:yaml)
 
-            terminus.expects(:path).with(@name).returns "/my/yaml/file"
+            repository.expects(:path).with(@name).returns "/my/yaml/file"
 
             FileTest.expects(:exist?).with("/my/yaml/file").returns false
             Puppet::Node.find(@name).should be_nil
         end
 
-        it "should have an ldap terminus" do
-            Puppet::Node.router.terminus(:ldap).should_not be_nil
+        it "should have an ldap repository" do
+            Puppet::Node.router.repository(:ldap).should_not be_nil
         end
 
-        it "should be able to use the plain terminus" do
-            Puppet::Node.router.stubs(:terminus_class).returns :plain
+        it "should be able to use the plain repository" do
+            Puppet::Node.router.stubs(:repository_class).returns :plain
 
             # Load now, before we stub the exists? method.
-            Puppet::Node.router.terminus(:plain)
+            Puppet::Node.router.repository(:plain)
 
             Puppet::Node.expects(:new).with(@name).returns @node
 
             Puppet::Node.find(@name).should equal(@node)
         end
 
-        describe "and using the memory terminus" do
+        describe "and using the memory repository" do
             before do
                 @name = "me"
-                @old_terminus = Puppet::Node.router.terminus_class
-                @terminus = Puppet::Node.router.terminus(:memory)
-                Puppet::Node.router.stubs(:terminus).returns @terminus
+                @old_repository = Puppet::Node.router.repository_class
+                @repository = Puppet::Node.router.repository(:memory)
+                Puppet::Node.router.stubs(:repository).returns @repository
                 @node = Puppet::Node.new(@name)
             end
 

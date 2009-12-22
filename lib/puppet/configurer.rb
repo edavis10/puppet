@@ -106,7 +106,7 @@ class Puppet::Configurer
 
             begin
                 duration = thinmark do
-                    result = catalog_class.find(name, fact_options.merge(:ignore_terminus => true))
+                    result = catalog_class.find(name, fact_options.merge(:ignore_repository => true))
                 end
                 Puppet.notice "Using cached catalog"
             rescue => detail

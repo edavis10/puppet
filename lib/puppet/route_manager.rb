@@ -1,6 +1,6 @@
 # Manage routers to termini.  They are organized in terms of routers -
 # - e.g., configuration, node, file, certificate -- and each router has one
-# or more terminus types defined.  The router is configured via the
+# or more repository types defined.  The router is configured via the
 # +indirects+ method, which will be called by the class extending itself
 # with this module.
 module Puppet::RouteManager
@@ -8,12 +8,12 @@ module Puppet::RouteManager
     # different router types.
 
     require 'puppet/route_manager/router'
-    require 'puppet/route_manager/terminus'
+    require 'puppet/route_manager/repository'
     require 'puppet/route_manager/envelope'
     require 'puppet/network/format_handler'
 
     # Declare that the including class indirects its methods to
-    # this terminus.  The terminus name must be the name of a Puppet
+    # this repository.  The repository name must be the name of a Puppet
     # default, not the value -- if it's the value, then it gets
     # evaluated at parse time, which is before the user has had a chance
     # to override it.
@@ -25,8 +25,8 @@ module Puppet::RouteManager
         include Puppet::RouteManager::Envelope
         extend Puppet::Network::FormatHandler
 
-        # instantiate the actual Terminus for that type and this name (:ldap, w/ args :node)
-        # & hook the instantiated Terminus into this class (Node: @router = terminus)
+        # instantiate the actual Repository for that type and this name (:ldap, w/ args :node)
+        # & hook the instantiated Repository into this class (Node: @router = repository)
         @router = Puppet::RouteManager::Router.new(self, router,  options)
         @router
     end
@@ -38,8 +38,8 @@ module Puppet::RouteManager
             router.cache_class = klass
         end
 
-        def terminus_class=(klass)
-            router.terminus_class = klass
+        def repository_class=(klass)
+            router.repository_class = klass
         end
          
         # Expire any cached instance.

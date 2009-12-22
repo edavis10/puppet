@@ -24,8 +24,8 @@ describe Puppet::Transaction::Report, " when being indirect" do
         report.save
     end
 
-    it "should default to the 'processor' terminus" do
-        Puppet::Transaction::Report.router.terminus_class.should == :processor
+    it "should default to the 'processor' repository" do
+        Puppet::Transaction::Report.router.repository_class.should == :processor
     end
 
     it "should delegate its name attribute to its host method" do

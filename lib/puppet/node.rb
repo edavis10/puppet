@@ -9,8 +9,8 @@ class Puppet::Node
     # the node sources.
     extend Puppet::RouteManager
 
-    # Use the node source as the router terminus.
-    indirects :node, :terminus_setting => :node_terminus, :doc => "Where to find node information.
+    # Use the node source as the router repository.
+    indirects :node, :repository_setting => :node_terminus, :doc => "Where to find node information.
         A node is composed of its name, its facts, and its environment."
 
     attr_accessor :name, :classes, :parameters, :source, :ipaddress

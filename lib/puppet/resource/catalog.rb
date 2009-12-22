@@ -16,7 +16,7 @@ class Puppet::Resource::Catalog < Puppet::SimpleGraph
     class DuplicateResourceError < Puppet::Error; end
 
     extend Puppet::RouteManager
-    indirects :catalog, :terminus_class => :compiler
+    indirects :catalog, :repository_class => :compiler
 
     include Puppet::Util::Tagging
     extend Puppet::Util::Pson

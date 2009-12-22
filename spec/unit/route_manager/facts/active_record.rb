@@ -11,10 +11,10 @@ describe "Puppet::Node::Facts::ActiveRecord" do
         require 'puppet/route_manager/facts/active_record'
         Puppet.features.stubs(:rails?).returns true
         Puppet::Rails.stubs(:init)
-        @terminus = Puppet::Node::Facts::ActiveRecord.new
+        @repository = Puppet::Node::Facts::ActiveRecord.new
     end
 
-    it "should be a subclass of the ActiveRecord terminus class" do
+    it "should be a subclass of the ActiveRecord repository class" do
         Puppet::Node::Facts::ActiveRecord.ancestors.should be_include(Puppet::RouteManager::ActiveRecord)
     end
 
@@ -29,18 +29,18 @@ describe "Puppet::Node::Facts::ActiveRecord" do
 
         it "should use the Hosts ActiveRecord class to find the host" do
             Puppet::Rails::Host.expects(:find_by_name).with { |key, args| key == "foo" }
-            @terminus.find(@request)
+            @repository.find(@request)
         end
 
         it "should include the fact names and values when finding the host" do
             Puppet::Rails::Host.expects(:find_by_name).with { |key, args| args[:include] == {:fact_values => :fact_name} }
-            @terminus.find(@request)
+            @repository.find(@request)
         end
 
         it "should return nil if no host instance can be found" do
             Puppet::Rails::Host.expects(:find_by_name).returns nil
 
-            @terminus.find(@request).should be_nil
+            @repository.find(@request).should be_nil
         end
 
         it "should convert the node's parameters into a Facts instance if a host instance is found" do
@@ -49,7 +49,7 @@ describe "Puppet::Node::Facts::ActiveRecord" do
 
             Puppet::Rails::Host.expects(:find_by_name).returns host
 
-            result = @terminus.find(@request)
+            result = @repository.find(@request)
 
             result.should be_instance_of(Puppet::Node::Facts)
             result.name.should == "foo"
@@ -62,7 +62,7 @@ describe "Puppet::Node::Facts::ActiveRecord" do
 
             Puppet::Rails::Host.expects(:find_by_name).returns host
 
-            @terminus.find(@request).values["one"].should == "two"
+            @repository.find(@request).values["one"].should == "two"
         end
     end
 
@@ -77,7 +77,7 @@ describe "Puppet::Node::Facts::ActiveRecord" do
         it "should find the Rails host with the same name" do
             Puppet::Rails::Host.expects(:find_by_name).with("foo").returns @host
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
 
         it "should create a new Rails host if none can be found" do
@@ -85,20 +85,20 @@ describe "Puppet::Node::Facts::ActiveRecord" do
 
             Puppet::Rails::Host.expects(:create).with(:name => "foo").returns @host
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
 
         it "should set the facts as facts on the Rails host instance" do
             # There is other stuff added to the hash.
             @host.expects(:merge_facts).with { |args| args["one"] == "two" and args["three"] == "four" }
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
 
         it "should save the Rails host instance" do
             @host.expects(:save)
 
-            @terminus.save(@request)
+            @repository.save(@request)
         end
     end
 end

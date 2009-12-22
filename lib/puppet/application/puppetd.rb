@@ -225,12 +225,12 @@ Puppet::Application.new(:puppetd) do
         # be local.
         Puppet::SSL::Host.ca_location = :remote
 
-        Puppet::Transaction::Report.terminus_class = :rest
+        Puppet::Transaction::Report.repository_class = :rest
 
-        Puppet::Resource::Catalog.terminus_class = :rest
+        Puppet::Resource::Catalog.repository_class = :rest
         Puppet::Resource::Catalog.cache_class = :yaml
 
-        Puppet::Node::Facts.terminus_class = :facter
+        Puppet::Node::Facts.repository_class = :facter
 
         # We need tomake the client either way, we just don't start it
         # if --no-client is set.

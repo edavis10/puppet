@@ -12,12 +12,12 @@ describe "PuppetMaster" do
         Puppet::Util::Log.stubs(:newdestination)
         Puppet::Util::Log.stubs(:level=)
 
-        Puppet::Node.stubs(:terminus_class=)
+        Puppet::Node.stubs(:repository_class=)
         Puppet::Node.stubs(:cache_class=)
-        Puppet::Node::Facts.stubs(:terminus_class=)
+        Puppet::Node::Facts.stubs(:repository_class=)
         Puppet::Node::Facts.stubs(:cache_class=)
-        Puppet::Transaction::Report.stubs(:terminus_class=)
-        Puppet::Resource::Catalog.stubs(:terminus_class=)
+        Puppet::Transaction::Report.stubs(:repository_class=)
+        Puppet::Resource::Catalog.stubs(:repository_class=)
     end
 
     it "should ask Puppet::Application to parse Puppet configuration file" do
@@ -182,8 +182,8 @@ describe "PuppetMaster" do
             @puppetmasterd.run_setup
         end
 
-        it "should set node facst terminus to yaml" do
-            Puppet::Node::Facts.expects(:terminus_class=).with(:yaml)
+        it "should set node facst repository to yaml" do
+            Puppet::Node::Facts.expects(:repository_class=).with(:yaml)
 
             @puppetmasterd.run_setup
         end

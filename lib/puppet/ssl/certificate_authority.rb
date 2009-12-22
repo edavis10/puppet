@@ -5,7 +5,7 @@ require 'puppet/util/cacher'
 # The class that knows how to sign certificates.  It creates
 # a 'special' SSL::Host whose name is 'ca', thus indicating
 # that, well, it's the CA.  There's some magic in the
-# route_manager/ssl_file terminus base class that does that
+# route_manager/ssl_file repository base class that does that
 # for us.
 #   This class mostly just signs certs for us, but
 # it can also be seen as a general interface into all of the

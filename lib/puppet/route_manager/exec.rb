@@ -1,7 +1,7 @@
-require 'puppet/route_manager/terminus'
+require 'puppet/route_manager/repository'
 require 'puppet/util'
 
-class Puppet::RouteManager::Exec < Puppet::RouteManager::Terminus
+class Puppet::RouteManager::Exec < Puppet::RouteManager::Repository
     # Look for external node definitions.
     def find(request)
         # Run the command.
@@ -44,7 +44,7 @@ class Puppet::RouteManager::Exec < Puppet::RouteManager::Terminus
         end
 
         if output =~ /\A\s*\Z/ # all whitespace
-            Puppet.debug "Empty response for %s from exec %s terminus" % [name, self.name]
+            Puppet.debug "Empty response for %s from exec %s repository" % [name, self.name]
             return nil
         else
             return output

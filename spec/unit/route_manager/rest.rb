@@ -27,10 +27,10 @@ end
 
 describe Puppet::RouteManager::REST do
     before do
-        Puppet::RouteManager::Terminus.stubs(:register_terminus_class)
+        Puppet::RouteManager::Repository.stubs(:register_repository_class)
         @model = stub('model', :supported_formats => %w{}, :convert_from => nil)
         @instance = stub('model instance', :name= => nil)
-        @router = stub('router', :name => :mystuff, :register_terminus_type => nil, :model => @model)
+        @router = stub('router', :name => :mystuff, :register_repository_type => nil, :model => @model)
         Puppet::RouteManager::Router.stubs(:instance).returns(@router)
 
         @rest_class = Class.new(Puppet::RouteManager::REST) do

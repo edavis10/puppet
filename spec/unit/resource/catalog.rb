@@ -843,8 +843,8 @@ describe Puppet::Resource::Catalog, "when compiling" do
             Puppet::Resource::Catalog.find(:myconfig)
         end
 
-        it "should default to the 'compiler' terminus" do
-            Puppet::Resource::Catalog.router.terminus_class.should == :compiler
+        it "should default to the 'compiler' repository" do
+            Puppet::Resource::Catalog.router.repository_class.should == :compiler
         end
 
         after do

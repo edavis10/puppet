@@ -4,15 +4,15 @@ require 'puppet/route_manager/request'
 require 'puppet/util/cacher'
 
 # The class that connects functional classes with their different collection
-# back-ends.  Each router has a set of associated terminus classes,
-# each of which is a subclass of Puppet::RouteManager::Terminus.
+# back-ends.  Each router has a set of associated repository classes,
+# each of which is a subclass of Puppet::RouteManager::Repository.
 class Puppet::RouteManager::Router
     include Puppet::Util::Cacher
     include Puppet::Util::Docs
 
     @@routers = []
 
-    # Find an router by name.  This is provided so that Terminus classes
+    # Find an router by name.  This is provided so that Repository classes
     # can specifically hook up with the routers they are associated with.
     def self.instance(name)
         @@routers.find { |i| i.name == name }
@@ -24,7 +24,7 @@ class Puppet::RouteManager::Router
         @@routers.collect { |i| i.name }
     end
 
-    # Find an indirected model by name.  This is provided so that Terminus classes
+    # Find an indirected model by name.  This is provided so that Repository classes
     # can specifically hook up with the routers they are associated with.
     def self.model(name)
         return nil unless match = @@routers.find { |i| i.name == name }
@@ -33,10 +33,10 @@ class Puppet::RouteManager::Router
 
     attr_accessor :name, :model
 
-    # Create and return our cache terminus.
+    # Create and return our cache repository.
     def cache
         raise(Puppet::DevError, "Tried to cache when no cache class was set") unless cache_class
-        terminus(cache_class)
+        repository(cache_class)
     end
 
     # Should we use a cache?
@@ -45,9 +45,9 @@ class Puppet::RouteManager::Router
     end
 
     attr_reader :cache_class
-    # Define a terminus class to be used for caching.
+    # Define a repository class to be used for caching.
     def cache_class=(class_name)
-        validate_terminus_class(class_name) if class_name
+        validate_repository_class(class_name) if class_name
         @cache_class = class_name
     end
 
@@ -83,8 +83,8 @@ class Puppet::RouteManager::Router
             text += scrub(@doc) + "\n\n"
         end
 
-        if s = terminus_setting()
-            text += "* **Terminus Setting**: %s" % terminus_setting
+        if s = repository_setting()
+            text += "* **Repository Setting**: %s" % repository_setting
         end
 
         text
@@ -95,7 +95,7 @@ class Puppet::RouteManager::Router
         @name = name
 
         @cache_class = nil
-        @terminus_class = nil
+        @repository_class = nil
 
         raise(ArgumentError, "Router %s is already defined" % @name) if @@routers.find { |i| i.name == @name }
         @@routers << self
@@ -105,7 +105,7 @@ class Puppet::RouteManager::Router
             options.delete(:extend)
         end
 
-        # This is currently only used for cache_class and terminus_class.
+        # This is currently only used for cache_class and repository_class.
         options.each do |name, value|
             begin
                 send(name.to_s + "=", value)
@@ -120,44 +120,44 @@ class Puppet::RouteManager::Router
         Puppet::RouteManager::Request.new(self.name, method, key, arguments)
     end
 
-    # Return the singleton terminus for this router.
-    def terminus(terminus_name = nil)
-        # Get the name of the terminus.
-        unless terminus_name ||= terminus_class
-            raise Puppet::DevError, "No terminus specified for %s; cannot redirect" % self.name
+    # Return the singleton repository for this router.
+    def repository(repository_name = nil)
+        # Get the name of the repository.
+        unless repository_name ||= repository_class
+            raise Puppet::DevError, "No repository specified for %s; cannot redirect" % self.name
         end
 
-        return termini[terminus_name] ||= make_terminus(terminus_name)
+        return termini[repository_name] ||= make_repository(repository_name)
     end
 
-    # This can be used to select the terminus class.
-    attr_accessor :terminus_setting
+    # This can be used to select the repository class.
+    attr_accessor :repository_setting
 
-    # Determine the terminus class.
-    def terminus_class
-        unless @terminus_class
-            if setting = self.terminus_setting
-                self.terminus_class = Puppet.settings[setting].to_sym
+    # Determine the repository class.
+    def repository_class
+        unless @repository_class
+            if setting = self.repository_setting
+                self.repository_class = Puppet.settings[setting].to_sym
             else
-                raise Puppet::DevError, "No terminus class nor terminus setting was provided for router %s" % self.name
+                raise Puppet::DevError, "No repository class nor repository setting was provided for router %s" % self.name
             end
         end
-        @terminus_class
+        @repository_class
     end
 
-    # Specify the terminus class to use.
-    def terminus_class=(klass)
-        validate_terminus_class(klass)
-        @terminus_class = klass
+    # Specify the repository class to use.
+    def repository_class=(klass)
+        validate_repository_class(klass)
+        @repository_class = klass
     end
 
-    # This is used by terminus_class= and cache=.
-    def validate_terminus_class(terminus_class)
-        unless terminus_class and terminus_class.to_s != ""
-            raise ArgumentError, "Invalid terminus name %s" % terminus_class.inspect
+    # This is used by repository_class= and cache=.
+    def validate_repository_class(repository_class)
+        unless repository_class and repository_class.to_s != ""
+            raise ArgumentError, "Invalid repository name %s" % repository_class.inspect
         end
-        unless Puppet::RouteManager::Terminus.terminus_class(self.name, terminus_class)
-            raise ArgumentError, "Could not find terminus %s for router %s" % [terminus_class, self.name]
+        unless Puppet::RouteManager::Repository.repository_class(self.name, repository_class)
+            raise ArgumentError, "Could not find repository %s for router %s" % [repository_class, self.name]
         end
     end
 
@@ -179,11 +179,11 @@ class Puppet::RouteManager::Router
         cache.save(request(:save, instance, *args))
     end
 
-    # Search for an instance in the appropriate terminus, caching the
+    # Search for an instance in the appropriate repository, caching the
     # results if caching is configured..
     def find(key, *args)
         request = request(:find, key, *args)
-        terminus = prepare(request)
+        repository = prepare(request)
 
         begin
             if result = find_in_cache(request)
@@ -194,15 +194,15 @@ class Puppet::RouteManager::Router
             Puppet.err "Cached %s for %s failed: %s" % [self.name, request.key, detail]
         end
 
-        # Otherwise, return the result from the terminus, caching if appropriate.
-        if ! request.ignore_terminus? and result = terminus.find(request)
+        # Otherwise, return the result from the repository, caching if appropriate.
+        if ! request.ignore_repository? and result = repository.find(request)
             result.expiration ||= self.expiration
             if cache? and request.use_cache?
                 Puppet.info "Caching %s for %s" % [self.name, request.key]
                 cache.save request(:save, result, *args)
             end
 
-            return terminus.respond_to?(:filter) ? terminus.filter(result) : result
+            return repository.respond_to?(:filter) ? repository.filter(result) : result
         end
 
         return nil
@@ -220,12 +220,12 @@ class Puppet::RouteManager::Router
         return cached
     end
 
-    # Remove something via the terminus.
+    # Remove something via the repository.
     def destroy(key, *args)
         request = request(:destroy, key, *args)
-        terminus = prepare(request)
+        repository = prepare(request)
 
-        result = terminus.destroy(request)
+        result = repository.destroy(request)
 
         if cache? and cached = cache.find(request(:find, key, *args))
             # Reuse the existing request, since it's equivalent.
@@ -238,10 +238,10 @@ class Puppet::RouteManager::Router
     # Search for more than one instance.  Should always return an array.
     def search(key, *args)
         request = request(:search, key, *args)
-        terminus = prepare(request)
+        repository = prepare(request)
 
-        if result = terminus.search(request)
-            raise Puppet::DevError, "Search results from terminus %s are not an array" % terminus.name unless result.is_a?(Array)
+        if result = repository.search(request)
+            raise Puppet::DevError, "Search results from repository %s are not an array" % repository.name unless result.is_a?(Array)
             result.each do |instance|
                 instance.expiration ||= self.expiration
             end
@@ -249,13 +249,13 @@ class Puppet::RouteManager::Router
         end
     end
 
-    # Save the instance in the appropriate terminus.  This method is
+    # Save the instance in the appropriate repository.  This method is
     # normally an instance method on the indirected class.
     def save(instance, *args)
         request = request(:save, instance, *args)
-        terminus = prepare(request)
+        repository = prepare(request)
 
-        result = terminus.save(request)
+        result = repository.save(request)
 
         # If caching is enabled, save our document there
         cache.save(request) if cache?
@@ -267,15 +267,15 @@ class Puppet::RouteManager::Router
 
     # Check authorization if there's a hook available; fail if there is one
     # and it returns false.
-    def check_authorization(request, terminus)
+    def check_authorization(request, repository)
         # At this point, we're assuming authorization makes no sense without
         # client information.
         return unless request.node
 
-        # This is only to authorize via a terminus-specific authorization hook.
-        return unless terminus.respond_to?(:authorized?)
+        # This is only to authorize via a repository-specific authorization hook.
+        return unless repository.respond_to?(:authorized?)
 
-        unless terminus.authorized?(request)
+        unless repository.authorized?(request)
             msg = "Not authorized to call %s on %s" % [request.method, request.to_s]
             unless request.options.empty?
                 msg += " with %s" % request.options.inspect
@@ -284,32 +284,32 @@ class Puppet::RouteManager::Router
         end
     end
 
-    # Setup a request, pick the appropriate terminus, check the request's authorization, and return it.
+    # Setup a request, pick the appropriate repository, check the request's authorization, and return it.
     def prepare(request)
-        # Pick our terminus.
-        if respond_to?(:select_terminus)
-            unless terminus_name = select_terminus(request)
-                raise ArgumentError, "Could not determine appropriate terminus for %s" % request
+        # Pick our repository.
+        if respond_to?(:select_repository)
+            unless repository_name = select_repository(request)
+                raise ArgumentError, "Could not determine appropriate repository for %s" % request
             end
         else
-            terminus_name = terminus_class
+            repository_name = repository_class
         end
 
-        dest_terminus = terminus(terminus_name)
-        check_authorization(request, dest_terminus)
+        dest_repository = repository(repository_name)
+        check_authorization(request, dest_repository)
 
-        return dest_terminus
+        return dest_repository
     end
 
-    # Create a new terminus instance.
-    def make_terminus(terminus_class)
-        # Load our terminus class.
-        unless klass = Puppet::RouteManager::Terminus.terminus_class(self.name, terminus_class)
-            raise ArgumentError, "Could not find terminus %s for router %s" % [terminus_class, self.name]
+    # Create a new repository instance.
+    def make_repository(repository_class)
+        # Load our repository class.
+        unless klass = Puppet::RouteManager::Repository.repository_class(self.name, repository_class)
+            raise ArgumentError, "Could not find repository %s for router %s" % [repository_class, self.name]
         end
         return klass.new
     end
 
-    # Cache our terminus instances indefinitely, but make it easy to clean them up.
+    # Cache our repository instances indefinitely, but make it easy to clean them up.
     cached_attr(:termini) { Hash.new }
 end

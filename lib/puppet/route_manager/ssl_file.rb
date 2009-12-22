@@ -1,6 +1,6 @@
 require 'puppet/ssl'
 
-class Puppet::RouteManager::SslFile < Puppet::RouteManager::Terminus
+class Puppet::RouteManager::SslFile < Puppet::RouteManager::Repository
     # Specify the directory in which multiple files are stored.
     def self.store_in(setting)
         @directory_setting = setting
@@ -49,7 +49,7 @@ class Puppet::RouteManager::SslFile < Puppet::RouteManager::Terminus
     def initialize
         Puppet.settings.use(:main, :ssl)
 
-        (collection_directory || file_location) or raise Puppet::DevError, "No file or directory setting provided; terminus %s cannot function" % self.class.name
+        (collection_directory || file_location) or raise Puppet::DevError, "No file or directory setting provided; repository %s cannot function" % self.class.name
     end
 
     # Use a setting to determine our path.

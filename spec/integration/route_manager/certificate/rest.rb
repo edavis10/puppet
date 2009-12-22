@@ -6,7 +6,7 @@ require 'puppet/ssl/certificate'
 require 'puppet/network/server'
 require 'puppet/network/http/webrick/rest'
 
-describe "Certificate REST Terminus" do
+describe "Certificate REST Repository" do
     before do
         Puppet[:masterport] = 34343
         Puppet[:server] = "localhost"

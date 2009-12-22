@@ -41,19 +41,19 @@ class Puppet::SSL::Host
         attr_reader :ca_location
     end
 
-    # Configure how our various classes interact with their various terminuses.
-    def self.configure_router(terminus, cache = nil)
-        Certificate.terminus_class = terminus
-        CertificateRequest.terminus_class = terminus
-        CertificateRevocationList.terminus_class = terminus
+    # Configure how our various classes interact with their various repositoryes.
+    def self.configure_router(repository, cache = nil)
+        Certificate.repository_class = repository
+        CertificateRequest.repository_class = repository
+        CertificateRevocationList.repository_class = repository
 
         if cache
             # This is weird; we don't actually cache our keys, we
             # use what would otherwise be the cache as our normal
-            # terminus.
-            Key.terminus_class = cache
+            # repository.
+            Key.repository_class = cache
         else
-            Key.terminus_class = terminus
+            Key.repository_class = repository
         end
 
         if cache

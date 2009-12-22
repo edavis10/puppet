@@ -5,7 +5,7 @@ require 'puppet/network/http_pool'
 require 'puppet/network/http/api/v1'
 
 # Access objects via REST
-class Puppet::RouteManager::REST < Puppet::RouteManager::Terminus
+class Puppet::RouteManager::REST < Puppet::RouteManager::Repository
     include Puppet::Network::HTTP::API::V1
 
     class << self

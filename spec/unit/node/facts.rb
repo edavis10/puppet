@@ -83,8 +83,8 @@ describe Puppet::Node::Facts, "when indirecting" do
             @facts.save
         end
 
-        it "should default to the 'facter' terminus" do
-            Puppet::Node::Facts.router.terminus_class.should == :facter
+        it "should default to the 'facter' repository" do
+            Puppet::Node::Facts.router.repository_class.should == :facter
         end
     end
 

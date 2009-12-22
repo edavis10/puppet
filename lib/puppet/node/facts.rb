@@ -16,8 +16,8 @@ class Puppet::Node::Facts
         end
     end
 
-    # Use the node source as the router terminus.
-    indirects :facts, :terminus_class => :facter, :extend => NodeExpirer
+    # Use the node source as the router repository.
+    indirects :facts, :repository_class => :facter, :extend => NodeExpirer
 
     attr_accessor :name, :values
 

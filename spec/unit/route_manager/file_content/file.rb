@@ -9,10 +9,10 @@ require 'puppet/route_manager/file_content/file'
 
 describe Puppet::RouteManager::FileContent::File do
     it "should be registered with the file_content router" do
-        Puppet::RouteManager::Terminus.terminus_class(:file_content, :file).should equal(Puppet::RouteManager::FileContent::File)
+        Puppet::RouteManager::Repository.repository_class(:file_content, :file).should equal(Puppet::RouteManager::FileContent::File)
     end
 
-    it "should be a subclass of the DirectFileServer terminus" do
+    it "should be a subclass of the DirectFileServer repository" do
         Puppet::RouteManager::FileContent::File.superclass.should equal(Puppet::RouteManager::DirectFileServer)
     end
 end

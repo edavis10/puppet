@@ -1,8 +1,8 @@
-require 'puppet/route_manager/terminus'
+require 'puppet/route_manager/repository'
 require 'puppet/util/queue'
 require 'puppet/util'
 
-# Implements the <tt>:queue</tt> abstract route_manager terminus type, for storing
+# Implements the <tt>:queue</tt> abstract route_manager repository type, for storing
 # model instances to a message queue, presumably for the purpose of out-of-process
 # handling of changes related to the model.
 #
@@ -11,14 +11,14 @@ require 'puppet/util'
 #
 # It's up to the queue client type to instantiate itself correctly based on Puppet configuration information.
 #
-# A single queue client is maintained for the abstract terminus, meaning that you can only use one type
+# A single queue client is maintained for the abstract repository, meaning that you can only use one type
 # of queue client, one message broker solution, etc., with the router mechanism.
 #
 # Per-router queues are assumed, based on the router name.  If the <tt>:catalog</tt> router makes
-# use of this <tt>:queue</tt> terminus, queue operations work against the "catalog" queue.  It is up to the queue
+# use of this <tt>:queue</tt> repository, queue operations work against the "catalog" queue.  It is up to the queue
 # client library to handle queue creation as necessary (for a number of popular queuing solutions, queue
 # creation is automatic and not a concern).
-class Puppet::RouteManager::Queue < Puppet::RouteManager::Terminus
+class Puppet::RouteManager::Queue < Puppet::RouteManager::Repository
     extend ::Puppet::Util::Queue
     include Puppet::Util
 
@@ -67,7 +67,7 @@ class Puppet::RouteManager::Queue < Puppet::RouteManager::Terminus
         result
     end
 
-    # Provides queue subscription functionality; for a given router, use this method on the terminus
+    # Provides queue subscription functionality; for a given router, use this method on the repository
     # to subscribe to the router-specific queue.  Your _block_ will be executed per new router
     # model received from the queue, with _obj_ being the model instance.
     def self.subscribe

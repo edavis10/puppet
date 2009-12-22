@@ -8,7 +8,7 @@ require 'puppet/route_manager/rest'
 # a fake class that will be indirected via REST
 class Puppet::TestIndirectedFoo
     extend Puppet::RouteManager
-    indirects :test_indirected_foo, :terminus_setting => :test_indirected_foo_terminus
+    indirects :test_indirected_foo, :repository_setting => :test_indirected_foo_repository
 
     attr_reader :value
     attr_accessor :name
@@ -26,7 +26,7 @@ class Puppet::TestIndirectedFoo
     end
 end
 
-# empty Terminus class -- this would normally have to be in a directory findable by the autoloader, but we short-circuit that below
+# empty Repository class -- this would normally have to be in a directory findable by the autoloader, but we short-circuit that below
 class Puppet::TestIndirectedFoo::Rest < Puppet::RouteManager::REST
 end
 
@@ -45,7 +45,7 @@ describe Puppet::RouteManager::REST do
 
         Puppet::SSL::Host.ca_location = :local
 
-        Puppet::TestIndirectedFoo.terminus_class = :rest
+        Puppet::TestIndirectedFoo.repository_class = :rest
     end
 
     after do

@@ -6,7 +6,7 @@ require 'puppet/ssl/certificate_request'
 require 'puppet/network/server'
 require 'puppet/network/http/webrick/rest'
 
-describe "Certificate Request REST Terminus" do
+describe "Certificate Request REST Repository" do
     before do
         Puppet::Util::Cacher.expire
 

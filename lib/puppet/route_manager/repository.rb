@@ -3,20 +3,20 @@ require 'puppet/route_manager/router'
 require 'puppet/util/instance_loader'
 
 # A simple class that can function as the base class for indirected types.
-class Puppet::RouteManager::Terminus
+class Puppet::RouteManager::Repository
     require 'puppet/util/docs'
     extend Puppet::Util::Docs
 
     class << self
         include Puppet::Util::InstanceLoader
 
-        attr_accessor :name, :terminus_type
-        attr_reader :abstract_terminus, :router
+        attr_accessor :name, :repository_type
+        attr_reader :abstract_repository, :router
 
-        # Are we an abstract terminus type, rather than an instance with an
+        # Are we an abstract repository type, rather than an instance with an
         # associated router?
-        def abstract_terminus?
-            abstract_terminus
+        def abstract_repository?
+            abstract_repository
         end
 
         # Convert a constant to a short name.
@@ -40,12 +40,12 @@ class Puppet::RouteManager::Terminus
         end
 
         # Register our subclass with the appropriate router.
-        # This follows the convention that our terminus is named after the
+        # This follows the convention that our repository is named after the
         # router.
         def inherited(subclass)
             longname = subclass.to_s
             if longname =~ /#<Class/
-                raise Puppet::DevError, "Terminus subclasses must have associated constants"
+                raise Puppet::DevError, "Repository subclasses must have associated constants"
             end
             names = longname.split("::")
 
@@ -55,15 +55,15 @@ class Puppet::RouteManager::Terminus
             subclass.name = name
 
             # Short-circuit the abstract types, which are those that directly subclass
-            # the Terminus class.
-            if self == Puppet::RouteManager::Terminus
-                subclass.mark_as_abstract_terminus
+            # the Repository class.
+            if self == Puppet::RouteManager::Repository
+                subclass.mark_as_abstract_repository
                 return
             end
 
-            # Set the terminus type to be the name of the abstract terminus type.
+            # Set the repository type to be the name of the abstract repository type.
             # Yay, class/instance confusion.
-            subclass.terminus_type = self.name
+            subclass.repository_type = self.name
 
             # Our subclass is specifically associated with an router.
             raise("Invalid name %s" % longname) unless names.length > 0
@@ -74,17 +74,17 @@ class Puppet::RouteManager::Terminus
             end
 
             # This will throw an exception if the router instance cannot be found.
-            # Do this last, because it also registers the terminus type with the router,
+            # Do this last, because it also registers the repository type with the router,
             # which needs the above information.
             subclass.router = router_name
 
             # And add this instance to the instance hash.
-            Puppet::RouteManager::Terminus.register_terminus_class(subclass)
+            Puppet::RouteManager::Repository.register_repository_class(subclass)
         end
 
         # Mark that this instance is abstract.
-        def mark_as_abstract_terminus
-            @abstract_terminus = true
+        def mark_as_abstract_repository
+            @abstract_repository = true
         end
 
         def model
@@ -97,19 +97,19 @@ class Puppet::RouteManager::Terminus
         end
 
         # Register a class, probably autoloaded.
-        def register_terminus_class(klass)
+        def register_repository_class(klass)
             setup_instance_loading klass.router_name
             instance_hash(klass.router_name)[klass.name] = klass
         end
 
-        # Return a terminus by name, using the autoloader.
-        def terminus_class(router_name, terminus_type)
+        # Return a repository by name, using the autoloader.
+        def repository_class(router_name, repository_type)
             setup_instance_loading router_name
-            loaded_instance(router_name, terminus_type)
+            loaded_instance(router_name, repository_type)
         end
 
-        # Return all terminus classes for a given router.
-        def terminus_classes(router_name)
+        # Return all repository classes for a given router.
+        def repository_classes(router_name)
             setup_instance_loading router_name
 
             # Load them all.
@@ -133,8 +133,8 @@ class Puppet::RouteManager::Terminus
     end
 
     def initialize
-        if self.class.abstract_terminus?
-            raise Puppet::DevError, "Cannot create instances of abstract terminus types"
+        if self.class.abstract_repository?
+            raise Puppet::DevError, "Cannot create instances of abstract repository types"
         end
     end
 
@@ -146,7 +146,7 @@ class Puppet::RouteManager::Terminus
         self.class.name
     end
 
-    def terminus_type
-        self.class.terminus_type
+    def repository_type
+        self.class.repository_type
     end
 end

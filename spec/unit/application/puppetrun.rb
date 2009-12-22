@@ -139,7 +139,7 @@ describe "puppetrun" do
             @puppetrun.run_setup
         end
 
-        describe "when using the ldap node terminus" do
+        describe "when using the ldap node repository" do
             before :each do
                 Puppet.stubs(:[]).with(:node_terminus).returns("ldap")
             end

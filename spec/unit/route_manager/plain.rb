@@ -5,9 +5,9 @@ require 'puppet/route_manager/plain'
 
 describe Puppet::RouteManager::Plain do
     before do
-        Puppet::RouteManager::Terminus.stubs(:register_terminus_class)
+        Puppet::RouteManager::Repository.stubs(:register_repository_class)
         @model = mock 'model'
-        @router = stub 'router', :name => :mystuff, :register_terminus_type => nil, :model => @model
+        @router = stub 'router', :name => :mystuff, :register_repository_type => nil, :model => @model
         Puppet::RouteManager::Router.stubs(:instance).returns(@router)
 
         @plain_class = Class.new(Puppet::RouteManager::Plain) do

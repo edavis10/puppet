@@ -6,7 +6,7 @@ require 'puppet/node'
 require 'puppet/route_manager/node/yaml'
 
 describe Puppet::Node::Yaml do
-    it "should be a subclass of the Yaml terminus" do
+    it "should be a subclass of the Yaml repository" do
         Puppet::Node::Yaml.superclass.should equal(Puppet::RouteManager::Yaml)
     end
 

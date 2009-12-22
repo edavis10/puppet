@@ -1,7 +1,7 @@
-require 'puppet/route_manager/terminus'
+require 'puppet/route_manager/repository'
 
-# An empty terminus type, meant to just return empty objects.
-class Puppet::RouteManager::File < Puppet::RouteManager::Terminus
+# An empty repository type, meant to just return empty objects.
+class Puppet::RouteManager::File < Puppet::RouteManager::Repository
     # Remove files on disk.
     def destroy(request)
         if respond_to?(:path)

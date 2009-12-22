@@ -31,7 +31,7 @@ describe Puppet::RouteManager::Queue do
 
     before :each do
         @model = mock 'model'
-        @router = stub 'router', :name => :my_queue, :register_terminus_type => nil, :model => @model
+        @router = stub 'router', :name => :my_queue, :register_repository_type => nil, :model => @model
         Puppet::RouteManager::Router.stubs(:instance).with(:my_queue).returns(@router)
         @store_class = Class.new(Puppet::RouteManager::Queue) do
             def self.to_s

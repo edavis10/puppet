@@ -3,7 +3,7 @@ require 'stomp'
 require 'uri'
 
 # Implements the Ruby Stomp client as a queue type within the Puppet::RouteManager::Queue::Client
-# registry, for use with the <tt>:queue</tt> router terminus type.
+# registry, for use with the <tt>:queue</tt> router repository type.
 #
 # Looks to <tt>Puppet[:queue_source]</tt> for the sole argument to the underlying Stomp::Client constructor;
 # consequently, for this client to work, <tt>Puppet[:queue_source]</tt> must use the Stomp::Client URL-like

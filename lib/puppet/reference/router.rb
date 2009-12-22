@@ -3,7 +3,7 @@ require 'puppet/checksum'
 require 'puppet/file_serving/content'
 require 'puppet/file_serving/metadata'
 
-reference = Puppet::Util::Reference.newreference :router, :doc => "Router types and their terminus classes" do
+reference = Puppet::Util::Reference.newreference :router, :doc => "Router types and their repository classes" do
     text = ""
     Puppet::RouteManager::Router.instances.sort { |a,b| a.to_s <=> b.to_s }.each do |router|
         ind = Puppet::RouteManager::Router.instance(router)
@@ -12,10 +12,10 @@ reference = Puppet::Util::Reference.newreference :router, :doc => "Router types 
 
         text += ind.doc + "\n\n"
 
-        Puppet::RouteManager::Terminus.terminus_classes(ind.name).sort { |a,b| a.to_s <=> b.to_s }.each do |terminus|
-            text += terminus.to_s + "\n" + ("+" * terminus.to_s.length) + "\n\n"
+        Puppet::RouteManager::Repository.repository_classes(ind.name).sort { |a,b| a.to_s <=> b.to_s }.each do |repository|
+            text += repository.to_s + "\n" + ("+" * repository.to_s.length) + "\n\n"
 
-            term_class = Puppet::RouteManager::Terminus.terminus_class(ind.name, terminus)
+            term_class = Puppet::RouteManager::Repository.repository_class(ind.name, repository)
 
             text += Puppet::Util::Docs.scrub(term_class.doc) + "\n\n"
         end
@@ -24,10 +24,10 @@ reference = Puppet::Util::Reference.newreference :router, :doc => "Router types 
     text
 end
 
-reference.header = "This is the list of all routers, their associated terminus classes, and how you select between them.
+reference.header = "This is the list of all routers, their associated repository classes, and how you select between them.
 
-In general, the appropriate terminus class is selected by the application for you (e.g., ``puppetd`` would always use the ``rest``
-terminus for most of its indirected classes), but some classes are tunable via normal settings.  These will have ``terminus setting``
+In general, the appropriate repository class is selected by the application for you (e.g., ``puppetd`` would always use the ``rest``
+repository for most of its indirected classes), but some classes are tunable via normal settings.  These will have ``repository setting``
 documentation listed with them.
 
 

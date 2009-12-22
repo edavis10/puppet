@@ -1,6 +1,6 @@
 require 'puppet/route_manager'
 
-class Puppet::RouteManager::ActiveRecord < Puppet::RouteManager::Terminus
+class Puppet::RouteManager::ActiveRecord < Puppet::RouteManager::Repository
     class << self
         attr_accessor :ar_model
     end
