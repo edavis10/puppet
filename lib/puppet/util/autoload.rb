@@ -87,14 +87,8 @@ class Puppet::Util::Autoload
                 loaded name, file
                 return true
             rescue Exception => detail
-                # I have no idea what's going on here, but different versions
-                # of ruby are raising different errors on missing files.
-                unless detail.to_s =~ /^no such file/i
-                    warn "Could not autoload %s: %s" % [name, detail]
-                    if Puppet[:trace]
-                        puts detail.backtrace
-                    end
-                end
+                puts detail.backtrace if Puppet[:trace]
+                warn "Could not autoload #{name}: #{detail}"
                 return named_file_is_missing(name)
             end
         end
@@ -124,10 +118,8 @@ class Puppet::Util::Autoload
                     Kernel.require file
                     loaded(name, file)
                 rescue Exception => detail
-                    if Puppet[:trace]
-                        puts detail.backtrace
-                    end
-                    warn "Could not autoload %s: %s" % [file.inspect, detail]
+                    puts detail.backtrace if Puppet[:trace]
+                    warn "Could not autoload #{file}: #{detail}"
                 end
             end
         end
