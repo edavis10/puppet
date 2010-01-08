@@ -6,8 +6,10 @@ class Puppet::Parser::Resource
     require 'puppet/util/tagging'
     require 'puppet/file_collection/lookup'
     require 'puppet/parser/yaml_trimmer'
+    require 'puppet/resource/type_collection_helper'
 
     include Puppet::FileCollection::Lookup
+    include Puppet::Resource::TypeCollectionHelper
 
     include Puppet::Util
     include Puppet::Util::MethodHelper
@@ -68,6 +70,10 @@ class Puppet::Parser::Resource
         @params.each do |name, param|
             yield param
         end
+    end
+
+    def environment
+        scope.environment
     end
 
     # Retrieve the associated definition and evaluate it.
