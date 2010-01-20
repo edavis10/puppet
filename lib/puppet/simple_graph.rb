@@ -32,7 +32,9 @@ class Puppet::SimpleGraph
                 return send(direction.to_s + "_edges")
             end
 
-            return @adjacencies[direction].keys.reject { |vertex| @adjacencies[direction][vertex].empty? }
+            return @adjacencies[direction].keys.reject { |vertex| @adjacencies[direction][vertex].empty? }.collect do |key|
+                @adjacencies[direction][key].to_a
+            end.flatten.sort.collect { |edge| edge.target }
         end
 
         # Add an edge to our list.

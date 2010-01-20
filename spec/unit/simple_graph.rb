@@ -37,6 +37,17 @@ describe Puppet::SimpleGraph do
         @graph.to_yaml_properties[0].should == "@edges"
     end
 
+    it "should descend dependency edges before containment edges" do
+        @graph = Puppet::SimpleGraph.new
+        @graph.add_edge Puppet::Relationship.new(:one, :two, :type => :dependency)
+        @graph.add_edge Puppet::Relationship.new(:one, :three, :type => :containment)
+        targets = []
+        @graph.walk(:one, :out) do |source, target|
+            targets << target
+        end
+        targets.should == [:two, :three]
+    end
+
     describe "when managing vertices" do
         before do
             @graph = Puppet::SimpleGraph.new
