@@ -34,7 +34,6 @@ describe Puppet::SimpleGraph do
     it "should always put its edges first when printing yaml" do
         @graph = Puppet::SimpleGraph.new
         @graph.add_edge(:one, :two)
-        p @graph.to_yaml_properties
         @graph.to_yaml_properties[0].should == "@edges"
     end
 
